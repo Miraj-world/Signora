@@ -1,9 +1,9 @@
 product_id,product_name,brand,category,source_url,retrieved_at
-amazon_echo_alexa,Amazon Echo / Alexa,Amazon,smart speaker / voice assistant,provided_csv_sample,2026-06-25T05:30:16Z
-amazon_echo_dot,Amazon Echo Dot,Amazon,smart speaker,provided_csv_sample,2026-06-25T05:30:16Z
-amazon_echo_show,Amazon Echo Show,Amazon,smart display,provided_csv_sample,2026-06-25T05:30:16Z
-sony_wh1000xm5,Sony WH-1000XM5,Sony,headphones,provided_csv_sample,2026-06-25T05:30:16Z
-sony_wh1000xm6,Sony WH-1000XM6,Sony,headphones,provided_csv_sample,2026-06-25T05:30:16Z
-sony_wh1000xm4,Sony WH-1000XM4,Sony,headphones,provided_csv_sample,2026-06-25T05:30:16Z
-sony_wh1000x_series,Sony WH-1000X series,Sony,headphones,provided_csv_sample,2026-06-25T05:30:16Z
-wyze_cam_v3,Wyze Cam v3,Wyze,security camera,provided_csv_sample,2026-06-25T05:30:16Z
+amazon_echo_alexa,Amazon Echo / Alexa,Amazon,smart speaker / voice assistant,provided_csv_sample,2026-06-25T14:56:59Z
+amazon_echo_dot,Amazon Echo Dot,Amazon,smart speaker,provided_csv_sample,2026-06-25T14:56:59Z
+amazon_echo_show,Amazon Echo Show,Amazon,smart display,provided_csv_sample,2026-06-25T14:56:59Z
+sony_wh1000xm5,Sony WH-1000XM5,Sony,headphones,provided_csv_sample,2026-06-25T14:56:59Z
+sony_wh1000xm6,Sony WH-1000XM6,Sony,headphones,provided_csv_sample,2026-06-25T14:56:59Z
+sony_wh1000xm4,Sony WH-1000XM4,Sony,headphones,provided_csv_sample,2026-06-25T14:56:59Z
+sony_wh1000x_series,Sony WH-1000X series,Sony,headphones,provided_csv_sample,2026-06-25T14:56:59Z
+wyze_cam_v3,Wyze Cam v3,Wyze,security camera,provided_csv_sample,2026-06-25T14:56:59Z
