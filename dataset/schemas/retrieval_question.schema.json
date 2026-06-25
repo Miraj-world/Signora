@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "voc_schema_v1",
+  "required": [
+    "question_id",
+    "question",
+    "question_type",
+    "expected_atom_ids",
+    "should_abstain",
+    "review_status"
+  ]
+}

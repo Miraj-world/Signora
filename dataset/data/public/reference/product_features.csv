@@ -1,0 +1,9 @@
+feature_name,product_id,retrieved_at,source_url
+unknown_pending_verified_public_source,amazon_echo_alexa,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,amazon_echo_dot,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,amazon_echo_show,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,sony_wh1000xm5,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,sony_wh1000xm6,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,sony_wh1000xm4,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,sony_wh1000x_series,2026-06-25T05:30:16Z,not_collected
+unknown_pending_verified_public_source,wyze_cam_v3,2026-06-25T05:30:16Z,not_collected

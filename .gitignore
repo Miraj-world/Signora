@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+~$*
+tmp/
+temp/
+
+# Local notebooks and scratch exports
+.ipynb_checkpoints/
+scratch/
+exports/
+
+# Raw handoff archives and private source inputs should live in Drive.
+*.zip
+dataset/source_inputs/**/*.docx
+dataset/source_inputs/**/*.xlsx
+dataset/source_inputs/**/*.xls
+dataset/source_inputs/**/*.pptx

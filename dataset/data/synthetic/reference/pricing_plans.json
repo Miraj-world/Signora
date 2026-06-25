@@ -1,0 +1,60 @@
+{
+  "pricing_version": "clouddesk_pricing_v1",
+  "plans": [
+    {
+      "plan_id": "starter",
+      "name": "Starter",
+      "monthly_price_per_user": 8,
+      "target_segments": [
+        "individual",
+        "small_business"
+      ],
+      "limits": [
+        "5 projects",
+        "basic reports"
+      ],
+      "support_plan": "email"
+    },
+    {
+      "plan_id": "team",
+      "name": "Team",
+      "monthly_price_per_user": 14,
+      "target_segments": [
+        "small_business",
+        "agency"
+      ],
+      "limits": [
+        "25 projects",
+        "standard integrations"
+      ],
+      "support_plan": "email_chat"
+    },
+    {
+      "plan_id": "business",
+      "name": "Business",
+      "monthly_price_per_user": 24,
+      "target_segments": [
+        "mid_market",
+        "agency"
+      ],
+      "limits": [
+        "advanced reporting",
+        "SSO add-on"
+      ],
+      "support_plan": "priority"
+    },
+    {
+      "plan_id": "enterprise",
+      "name": "Enterprise",
+      "monthly_price_per_user": null,
+      "target_segments": [
+        "enterprise"
+      ],
+      "limits": [
+        "contracted seats",
+        "dedicated onboarding"
+      ],
+      "support_plan": "dedicated_csm"
+    }
+  ]
+}

@@ -1,0 +1,877 @@
+{
+  "taxonomy_version": "clouddesk_taxonomy_v1",
+  "topics": [
+    {
+      "topic_id": "topic_onboarding",
+      "topic_name": "onboarding",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for onboarding feedback.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "onboarding"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_sso_configuration",
+      "topic_name": "sso_configuration",
+      "parent_topic_id": "topic_onboarding",
+      "description": "Customer feedback about sso configuration.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "sso configuration",
+        "sso"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_bulk_user_import",
+      "topic_name": "bulk_user_import",
+      "parent_topic_id": "topic_onboarding",
+      "description": "Customer feedback about bulk user import.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "bulk user import",
+        "bulk"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_workspace_setup",
+      "topic_name": "workspace_setup",
+      "parent_topic_id": "topic_onboarding",
+      "description": "Customer feedback about workspace setup.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "workspace setup",
+        "workspace"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_data_migration",
+      "topic_name": "data_migration",
+      "parent_topic_id": "topic_onboarding",
+      "description": "Customer feedback about data migration.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "data migration",
+        "data"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_onboarding_documentation",
+      "topic_name": "onboarding_documentation",
+      "parent_topic_id": "topic_onboarding",
+      "description": "Customer feedback about onboarding documentation.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "onboarding documentation",
+        "onboarding"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_administrator_training",
+      "topic_name": "administrator_training",
+      "parent_topic_id": "topic_onboarding",
+      "description": "Customer feedback about administrator training.",
+      "product_area": "onboarding",
+      "example_phrases": [
+        "administrator training",
+        "administrator"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_permissions",
+      "topic_name": "permissions",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for permissions feedback.",
+      "product_area": "permissions",
+      "example_phrases": [
+        "permissions"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_role_templates",
+      "topic_name": "role_templates",
+      "parent_topic_id": "topic_permissions",
+      "description": "Customer feedback about role templates.",
+      "product_area": "permissions",
+      "example_phrases": [
+        "role templates",
+        "role"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_permission_inheritance",
+      "topic_name": "permission_inheritance",
+      "parent_topic_id": "topic_permissions",
+      "description": "Customer feedback about permission inheritance.",
+      "product_area": "permissions",
+      "example_phrases": [
+        "permission inheritance",
+        "permission"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_guest_access",
+      "topic_name": "guest_access",
+      "parent_topic_id": "topic_permissions",
+      "description": "Customer feedback about guest access.",
+      "product_area": "permissions",
+      "example_phrases": [
+        "guest access",
+        "guest"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_audit_logs",
+      "topic_name": "audit_logs",
+      "parent_topic_id": "topic_permissions",
+      "description": "Customer feedback about audit logs.",
+      "product_area": "permissions",
+      "example_phrases": [
+        "audit logs",
+        "audit"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_client_workspace_permissions",
+      "topic_name": "client_workspace_permissions",
+      "parent_topic_id": "topic_permissions",
+      "description": "Customer feedback about client workspace permissions.",
+      "product_area": "permissions",
+      "example_phrases": [
+        "client workspace permissions",
+        "client"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_notifications",
+      "topic_name": "notifications",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for notifications feedback.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "notifications"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_email_notifications",
+      "topic_name": "email_notifications",
+      "parent_topic_id": "topic_notifications",
+      "description": "Customer feedback about email notifications.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "email notifications",
+        "email"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_push_notifications",
+      "topic_name": "push_notifications",
+      "parent_topic_id": "topic_notifications",
+      "description": "Customer feedback about push notifications.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "push notifications",
+        "push"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_notification_preferences",
+      "topic_name": "notification_preferences",
+      "parent_topic_id": "topic_notifications",
+      "description": "Customer feedback about notification preferences.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "notification preferences",
+        "notification"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_time_zone_handling",
+      "topic_name": "time_zone_handling",
+      "parent_topic_id": "topic_notifications",
+      "description": "Customer feedback about time zone handling.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "time zone handling",
+        "time"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_delayed_notifications",
+      "topic_name": "delayed_notifications",
+      "parent_topic_id": "topic_notifications",
+      "description": "Customer feedback about delayed notifications.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "delayed notifications",
+        "delayed"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_duplicate_notifications",
+      "topic_name": "duplicate_notifications",
+      "parent_topic_id": "topic_notifications",
+      "description": "Customer feedback about duplicate notifications.",
+      "product_area": "notifications",
+      "example_phrases": [
+        "duplicate notifications",
+        "duplicate"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_reporting",
+      "topic_name": "reporting",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for reporting feedback.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "reporting"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_csv_export",
+      "topic_name": "csv_export",
+      "parent_topic_id": "topic_reporting",
+      "description": "Customer feedback about csv export.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "csv export",
+        "csv"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_pdf_export",
+      "topic_name": "pdf_export",
+      "parent_topic_id": "topic_reporting",
+      "description": "Customer feedback about pdf export.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "pdf export",
+        "pdf"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_scheduled_reports",
+      "topic_name": "scheduled_reports",
+      "parent_topic_id": "topic_reporting",
+      "description": "Customer feedback about scheduled reports.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "scheduled reports",
+        "scheduled"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_dashboard_customization",
+      "topic_name": "dashboard_customization",
+      "parent_topic_id": "topic_reporting",
+      "description": "Customer feedback about dashboard customization.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "dashboard customization",
+        "dashboard"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_large_dataset_performance",
+      "topic_name": "large_dataset_performance",
+      "parent_topic_id": "topic_reporting",
+      "description": "Customer feedback about large dataset performance.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "large dataset performance",
+        "large"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_report_permissions",
+      "topic_name": "report_permissions",
+      "parent_topic_id": "topic_reporting",
+      "description": "Customer feedback about report permissions.",
+      "product_area": "reporting",
+      "example_phrases": [
+        "report permissions",
+        "report"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_integrations",
+      "topic_name": "integrations",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for integrations feedback.",
+      "product_area": "integrations",
+      "example_phrases": [
+        "integrations"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_slack",
+      "topic_name": "slack",
+      "parent_topic_id": "topic_integrations",
+      "description": "Customer feedback about slack.",
+      "product_area": "integrations",
+      "example_phrases": [
+        "slack",
+        "slack"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_microsoft_teams",
+      "topic_name": "microsoft_teams",
+      "parent_topic_id": "topic_integrations",
+      "description": "Customer feedback about microsoft teams.",
+      "product_area": "integrations",
+      "example_phrases": [
+        "microsoft teams",
+        "microsoft"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_google_drive",
+      "topic_name": "google_drive",
+      "parent_topic_id": "topic_integrations",
+      "description": "Customer feedback about google drive.",
+      "product_area": "integrations",
+      "example_phrases": [
+        "google drive",
+        "google"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_jira",
+      "topic_name": "jira",
+      "parent_topic_id": "topic_integrations",
+      "description": "Customer feedback about jira.",
+      "product_area": "integrations",
+      "example_phrases": [
+        "jira",
+        "jira"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_salesforce",
+      "topic_name": "salesforce",
+      "parent_topic_id": "topic_integrations",
+      "description": "Customer feedback about salesforce.",
+      "product_area": "integrations",
+      "example_phrases": [
+        "salesforce",
+        "salesforce"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_mobile_application",
+      "topic_name": "mobile_application",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for mobile application feedback.",
+      "product_area": "mobile_application",
+      "example_phrases": [
+        "mobile application"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_offline_task_viewing",
+      "topic_name": "offline_task_viewing",
+      "parent_topic_id": "topic_mobile_application",
+      "description": "Customer feedback about offline task viewing.",
+      "product_area": "mobile_application",
+      "example_phrases": [
+        "offline task viewing",
+        "offline"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_offline_editing",
+      "topic_name": "offline_editing",
+      "parent_topic_id": "topic_mobile_application",
+      "description": "Customer feedback about offline editing.",
+      "product_area": "mobile_application",
+      "example_phrases": [
+        "offline editing",
+        "offline"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_delayed_synchronization",
+      "topic_name": "delayed_synchronization",
+      "parent_topic_id": "topic_mobile_application",
+      "description": "Customer feedback about delayed synchronization.",
+      "product_area": "mobile_application",
+      "example_phrases": [
+        "delayed synchronization",
+        "delayed"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_mobile_search",
+      "topic_name": "mobile_search",
+      "parent_topic_id": "topic_mobile_application",
+      "description": "Customer feedback about mobile search.",
+      "product_area": "mobile_application",
+      "example_phrases": [
+        "mobile search",
+        "mobile"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_push_delivery",
+      "topic_name": "push_delivery",
+      "parent_topic_id": "topic_mobile_application",
+      "description": "Customer feedback about push delivery.",
+      "product_area": "mobile_application",
+      "example_phrases": [
+        "push delivery",
+        "push"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_billing",
+      "topic_name": "billing",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for billing feedback.",
+      "product_area": "billing",
+      "example_phrases": [
+        "billing"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_plan_limits",
+      "topic_name": "plan_limits",
+      "parent_topic_id": "topic_billing",
+      "description": "Customer feedback about plan limits.",
+      "product_area": "billing",
+      "example_phrases": [
+        "plan limits",
+        "plan"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_feature_gating",
+      "topic_name": "feature_gating",
+      "parent_topic_id": "topic_billing",
+      "description": "Customer feedback about feature gating.",
+      "product_area": "billing",
+      "example_phrases": [
+        "feature gating",
+        "feature"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_invoice_clarity",
+      "topic_name": "invoice_clarity",
+      "parent_topic_id": "topic_billing",
+      "description": "Customer feedback about invoice clarity.",
+      "product_area": "billing",
+      "example_phrases": [
+        "invoice clarity",
+        "invoice"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_required_upgrades",
+      "topic_name": "required_upgrades",
+      "parent_topic_id": "topic_billing",
+      "description": "Customer feedback about required upgrades.",
+      "product_area": "billing",
+      "example_phrases": [
+        "required upgrades",
+        "required"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_seat_pricing",
+      "topic_name": "seat_pricing",
+      "parent_topic_id": "topic_billing",
+      "description": "Customer feedback about seat pricing.",
+      "product_area": "billing",
+      "example_phrases": [
+        "seat pricing",
+        "seat"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_workspace_management",
+      "topic_name": "workspace_management",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for workspace management feedback.",
+      "product_area": "workspace_management",
+      "example_phrases": [
+        "workspace management"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_workspace_switching",
+      "topic_name": "workspace_switching",
+      "parent_topic_id": "topic_workspace_management",
+      "description": "Customer feedback about workspace switching.",
+      "product_area": "workspace_management",
+      "example_phrases": [
+        "workspace switching",
+        "workspace"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_client_context",
+      "topic_name": "client_context",
+      "parent_topic_id": "topic_workspace_management",
+      "description": "Customer feedback about client context.",
+      "product_area": "workspace_management",
+      "example_phrases": [
+        "client context",
+        "client"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_archive_restore",
+      "topic_name": "archive_restore",
+      "parent_topic_id": "topic_workspace_management",
+      "description": "Customer feedback about archive restore.",
+      "product_area": "workspace_management",
+      "example_phrases": [
+        "archive restore",
+        "archive"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_workspace_templates",
+      "topic_name": "workspace_templates",
+      "parent_topic_id": "topic_workspace_management",
+      "description": "Customer feedback about workspace templates.",
+      "product_area": "workspace_management",
+      "example_phrases": [
+        "workspace templates",
+        "workspace"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_cross_workspace_search",
+      "topic_name": "cross_workspace_search",
+      "parent_topic_id": "topic_workspace_management",
+      "description": "Customer feedback about cross workspace search.",
+      "product_area": "workspace_management",
+      "example_phrases": [
+        "cross workspace search",
+        "cross"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_search",
+      "topic_name": "search",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for search feedback.",
+      "product_area": "search",
+      "example_phrases": [
+        "search"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_exact_match_dependency",
+      "topic_name": "exact_match_dependency",
+      "parent_topic_id": "topic_search",
+      "description": "Customer feedback about exact match dependency.",
+      "product_area": "search",
+      "example_phrases": [
+        "exact match dependency",
+        "exact"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_filtering",
+      "topic_name": "filtering",
+      "parent_topic_id": "topic_search",
+      "description": "Customer feedback about filtering.",
+      "product_area": "search",
+      "example_phrases": [
+        "filtering",
+        "filtering"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_archived_tasks",
+      "topic_name": "archived_tasks",
+      "parent_topic_id": "topic_search",
+      "description": "Customer feedback about archived tasks.",
+      "product_area": "search",
+      "example_phrases": [
+        "archived tasks",
+        "archived"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_attachment_search",
+      "topic_name": "attachment_search",
+      "parent_topic_id": "topic_search",
+      "description": "Customer feedback about attachment search.",
+      "product_area": "search",
+      "example_phrases": [
+        "attachment search",
+        "attachment"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_relevance_ranking",
+      "topic_name": "relevance_ranking",
+      "parent_topic_id": "topic_search",
+      "description": "Customer feedback about relevance ranking.",
+      "product_area": "search",
+      "example_phrases": [
+        "relevance ranking",
+        "relevance"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_customer_support",
+      "topic_name": "customer_support",
+      "parent_topic_id": null,
+      "description": "Top-level CloudDesk area for customer support feedback.",
+      "product_area": "customer_support",
+      "example_phrases": [
+        "customer support"
+      ],
+      "excluded_meanings": [
+        "General sentiment without an actionable customer signal."
+      ]
+    },
+    {
+      "topic_id": "topic_response_time",
+      "topic_name": "response_time",
+      "parent_topic_id": "topic_customer_support",
+      "description": "Customer feedback about response time.",
+      "product_area": "customer_support",
+      "example_phrases": [
+        "response time",
+        "response"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_account_manager_help",
+      "topic_name": "account_manager_help",
+      "parent_topic_id": "topic_customer_support",
+      "description": "Customer feedback about account manager help.",
+      "product_area": "customer_support",
+      "example_phrases": [
+        "account manager help",
+        "account"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_workarounds",
+      "topic_name": "workarounds",
+      "parent_topic_id": "topic_customer_support",
+      "description": "Customer feedback about workarounds.",
+      "product_area": "customer_support",
+      "example_phrases": [
+        "workarounds",
+        "workarounds"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_escalation_quality",
+      "topic_name": "escalation_quality",
+      "parent_topic_id": "topic_customer_support",
+      "description": "Customer feedback about escalation quality.",
+      "product_area": "customer_support",
+      "example_phrases": [
+        "escalation quality",
+        "escalation"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    },
+    {
+      "topic_id": "topic_troubleshooting_clarity",
+      "topic_name": "troubleshooting_clarity",
+      "parent_topic_id": "topic_customer_support",
+      "description": "Customer feedback about troubleshooting clarity.",
+      "product_area": "customer_support",
+      "example_phrases": [
+        "troubleshooting clarity",
+        "troubleshooting"
+      ],
+      "excluded_meanings": [
+        "Unrelated use of the same words outside CloudDesk workflows."
+      ]
+    }
+  ]
+}

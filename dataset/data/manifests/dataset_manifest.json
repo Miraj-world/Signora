@@ -1,0 +1,91 @@
+{
+  "dataset_version": "voc_clouddesk_public_pilot_v1",
+  "created_at": "2026-06-25T05:30:16Z",
+  "updated_at": "2026-06-25T05:30:16Z",
+  "schema_versions": {
+    "default": "voc_schema_v1"
+  },
+  "prompt_versions": {
+    "default": "deterministic_template_v1"
+  },
+  "record_counts": {
+    "accounts": 500,
+    "customers": 1250,
+    "support_tickets": 3000,
+    "sales_call_excerpts": 1000,
+    "product_reviews": 1000,
+    "churn_feedback": 300,
+    "feature_requests": 500,
+    "customer_interviews": 200,
+    "github_issues": 500,
+    "opportunities": 2000,
+    "product_usage_summaries": 1000,
+    "public_feedback_accepted": 50,
+    "public_feedback_quarantined": 11
+  },
+  "source_counts": {
+    "synthetic": 11250,
+    "public_csv": 61
+  },
+  "date_ranges": {
+    "synthetic": {
+      "start": "2024-02-01T00:00:00Z",
+      "end": "2025-12-05T00:00:00Z"
+    }
+  },
+  "product_counts": {
+    "CloudDesk": 11250
+  },
+  "segment_counts": {
+    "agency": 62,
+    "small_business": 123,
+    "mid_market": 106,
+    "individual": 98,
+    "enterprise": 111
+  },
+  "channel_counts": {
+    "support": 3000,
+    "sales": 1000,
+    "reviews": 1000,
+    "churn": 300,
+    "feature_requests": 500,
+    "interviews": 200,
+    "github_issues": 500
+  },
+  "known_limitations": [
+    "Gold annotations are unverified suggestions until human review.",
+    "Public supplementary reference facts were not live-collected in this run.",
+    "Rule-based atom extraction is a pilot baseline, not an LLM-reviewed final."
+  ],
+  "reference_requirements_satisfied": {
+    "voice_of_customer_intelligence_docx": {
+      "support_tickets": "met_or_exceeded",
+      "sales_call_excerpts": "met_or_exceeded",
+      "churn_comments": "met",
+      "customer_reviews": "met",
+      "feature_requests": "met",
+      "release_notes": "met_or_exceeded",
+      "product_document_sections": "met_or_exceeded",
+      "crm_accounts": "met",
+      "github_issues": "covered_by_synthetic_issue_tracker_records"
+    },
+    "sales_and_retail_docx": {
+      "support_tickets": "met",
+      "sales_call_transcripts": "met",
+      "product_reviews": "met_or_exceeded",
+      "crm_deal_records": "met",
+      "synthetic_labeling_rule": "met"
+    }
+  },
+  "collection_failures": [
+    "No live public collection attempted; source registry records planned lawful source review.",
+    "GitHub issue coverage is synthetic CloudDesk issue-tracker data, not scraped public GitHub data."
+  ],
+  "synthetic_generation_batches": [
+    "synthetic_clouddesk_pilot_v1_2026_06_25",
+    "synthetic_clouddesk_full_v1_2026_06_25"
+  ],
+  "manual_annotation_status": "pending_human_review",
+  "hash_algorithm": "sha256",
+  "license_notes": "Synthetic CloudDesk data is fictional. Public CSV samples require source/license review before publishing."
+}

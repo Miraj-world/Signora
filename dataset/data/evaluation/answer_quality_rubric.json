@@ -1,0 +1,62 @@
+{
+  "rubric_version": "answer_quality_v1",
+  "normal_vector_index_exclusion": true,
+  "criteria": {
+    "correct_sql_counts": {
+      "scale": "0-2",
+      "description": "correct sql counts"
+    },
+    "correct_segment_filtering": {
+      "scale": "0-2",
+      "description": "correct segment filtering"
+    },
+    "correct_product_filtering": {
+      "scale": "0-2",
+      "description": "correct product filtering"
+    },
+    "required_topic_coverage": {
+      "scale": "0-2",
+      "description": "required topic coverage"
+    },
+    "citation_presence": {
+      "scale": "0-2",
+      "description": "citation presence"
+    },
+    "citation_validity": {
+      "scale": "0-2",
+      "description": "citation validity"
+    },
+    "citation_entailment": {
+      "scale": "0-2",
+      "description": "citation entailment"
+    },
+    "counterevidence_inclusion": {
+      "scale": "0-2",
+      "description": "counterevidence inclusion"
+    },
+    "unsupported_claim_rate": {
+      "scale": "0-2",
+      "description": "unsupported claim rate"
+    },
+    "recommendation_fact_separation": {
+      "scale": "0-2",
+      "description": "recommendation fact separation"
+    },
+    "uncertainty_statement": {
+      "scale": "0-2",
+      "description": "uncertainty statement"
+    },
+    "abstention_correctness": {
+      "scale": "0-2",
+      "description": "abstention correctness"
+    },
+    "duplicate_evidence_rate": {
+      "scale": "0-2",
+      "description": "duplicate evidence rate"
+    },
+    "source_diversity": {
+      "scale": "0-2",
+      "description": "source diversity"
+    }
+  }
+}

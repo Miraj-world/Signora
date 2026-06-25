@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "voc_schema_v1",
+  "required": [
+    "ticket_id",
+    "account_id",
+    "customer_id",
+    "description",
+    "created_at",
+    "data_origin",
+    "content_hash"
+  ]
+}
