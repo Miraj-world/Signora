@@ -42,6 +42,9 @@ temp/
 scratch/
 exports/
 
+# Rebuildable local semantic index
+dataset/index/
+
 # Raw handoff archives and private source inputs should live in Drive.
 *.zip
 dataset/source_inputs/**/*.docx
