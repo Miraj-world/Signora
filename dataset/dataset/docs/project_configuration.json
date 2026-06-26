@@ -1,0 +1,22 @@
+{
+  "stage_order": [
+    "audit",
+    "schema_definition",
+    "pilot_generation",
+    "validation",
+    "scaled_synthetic_generation",
+    "public_normalization",
+    "evaluation_ground_truth_suggestions"
+  ],
+  "human_review_checkpoints": [
+    "final product taxonomy",
+    "gold atom annotations",
+    "retrieval ground truth",
+    "ambiguous public records",
+    "publication of public data"
+  ],
+  "normal_vector_index_exclusions": [
+    "data/evaluation/**",
+    "data/synthetic/reference/hidden_patterns.json"
+  ]
+}

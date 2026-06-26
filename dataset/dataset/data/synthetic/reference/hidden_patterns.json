@@ -1,0 +1,88 @@
+{
+  "retrieval_index_policy": "Ground-truth pattern definitions must be excluded from normal RAG indexing.",
+  "patterns": [
+    {
+      "pattern_id": "enterprise_onboarding",
+      "description": "Enterprise administrators struggle with SSO, bulk user import, permission setup, and outdated docs.",
+      "segments": [
+        "enterprise"
+      ],
+      "channels": [
+        "support",
+        "sales",
+        "churn",
+        "feature_request",
+        "interview"
+      ],
+      "counterevidence": [
+        "paid onboarding lowers complaints",
+        "some enterprises complete setup without support"
+      ]
+    },
+    {
+      "pattern_id": "agency_workspace_switching",
+      "description": "Agencies struggle switching client workspaces and sometimes post in the wrong context.",
+      "segments": [
+        "agency"
+      ],
+      "counterevidence": [
+        "workspace templates reduce confusion"
+      ]
+    },
+    {
+      "pattern_id": "mobile_offline_access",
+      "description": "Mobile users request offline task viewing/editing and delayed sync.",
+      "segments": [
+        "individual",
+        "small_business",
+        "mid_market",
+        "enterprise",
+        "agency"
+      ],
+      "counterevidence": [
+        "always-connected users rarely mention it",
+        "some only need read-only offline mode"
+      ]
+    },
+    {
+      "pattern_id": "release_3_2_notification_regression",
+      "description": "Notification failures, timezone scheduling problems, and duplicates increase after 3.2.0.",
+      "release_id": "rel_3_2_0",
+      "counterevidence": [
+        "not all regions or integrations are affected"
+      ]
+    },
+    {
+      "pattern_id": "smb_pricing_concern",
+      "description": "Small businesses report plan limits, feature gating, confusing pricing, and required upgrades.",
+      "segments": [
+        "small_business"
+      ]
+    },
+    {
+      "pattern_id": "large_export_failure",
+      "description": "Large CSV exports time out, freeze, or become incomplete among mid-market and enterprise accounts.",
+      "segments": [
+        "mid_market",
+        "enterprise"
+      ]
+    },
+    {
+      "pattern_id": "positive_support_experience",
+      "description": "Some customers praise fast support, helpful account managers, and effective workarounds."
+    },
+    {
+      "pattern_id": "search_complaints",
+      "description": "Search depends on exact matches and struggles with filters and archived tasks."
+    },
+    {
+      "pattern_id": "integration_reliability",
+      "description": "Slack is mostly reliable, Teams has intermittent notification mapping, Google Drive has file permission confusion, Jira sync is mixed, Salesforce is more brittle."
+    },
+    {
+      "pattern_id": "insufficient_evidence",
+      "description": "No meaningful evidence is created for cryptocurrency payments, VR workspaces, drone integrations, or blockchain identity.",
+      "reserved_for_abstention": true
+    }
+  ]
+}

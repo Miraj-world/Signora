@@ -1,0 +1,474 @@
+{
+  "release_history_version": "clouddesk_releases_v1",
+  "releases": [
+    {
+      "release_id": "rel_3_0_0",
+      "version": "3.0.0",
+      "release_date": "2024-01-15T00:00:00Z",
+      "title": "CloudDesk 3.0.0",
+      "release_notes": "CloudDesk 3.0.0 improved billing, onboarding workflows.",
+      "features_added": [
+        "billing enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor onboarding fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "billing",
+        "onboarding"
+      ]
+    },
+    {
+      "release_id": "rel_3_0_1",
+      "version": "3.0.1",
+      "release_date": "2024-02-15T00:00:00Z",
+      "title": "CloudDesk 3.0.1",
+      "release_notes": "CloudDesk 3.0.1 improved billing, integrations workflows.",
+      "features_added": [
+        "billing enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor integrations fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "billing",
+        "integrations"
+      ]
+    },
+    {
+      "release_id": "rel_3_0_2",
+      "version": "3.0.2",
+      "release_date": "2024-03-17T00:00:00Z",
+      "title": "CloudDesk 3.0.2",
+      "release_notes": "CloudDesk 3.0.2 improved search, workspace_management workflows.",
+      "features_added": [
+        "search enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor workspace management fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "search",
+        "workspace_management"
+      ]
+    },
+    {
+      "release_id": "rel_3_0_3",
+      "version": "3.0.3",
+      "release_date": "2024-04-17T00:00:00Z",
+      "title": "CloudDesk 3.0.3",
+      "release_notes": "CloudDesk 3.0.3 improved permissions, mobile_application workflows.",
+      "features_added": [
+        "permissions enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor mobile application fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "permissions",
+        "mobile_application"
+      ]
+    },
+    {
+      "release_id": "rel_3_1_0",
+      "version": "3.1.0",
+      "release_date": "2024-05-18T00:00:00Z",
+      "title": "CloudDesk 3.1.0",
+      "release_notes": "CloudDesk 3.1.0 improved mobile_application, integrations workflows.",
+      "features_added": [
+        "mobile application enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor integrations fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "mobile_application",
+        "integrations"
+      ]
+    },
+    {
+      "release_id": "rel_3_1_1",
+      "version": "3.1.1",
+      "release_date": "2024-06-18T00:00:00Z",
+      "title": "CloudDesk 3.1.1",
+      "release_notes": "CloudDesk 3.1.1 improved mobile_application, onboarding workflows.",
+      "features_added": [
+        "mobile application enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor onboarding fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "mobile_application",
+        "onboarding"
+      ]
+    },
+    {
+      "release_id": "rel_3_1_2",
+      "version": "3.1.2",
+      "release_date": "2024-07-19T00:00:00Z",
+      "title": "CloudDesk 3.1.2",
+      "release_notes": "CloudDesk 3.1.2 improved notifications, billing workflows.",
+      "features_added": [
+        "notifications enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor billing fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "notifications",
+        "billing"
+      ]
+    },
+    {
+      "release_id": "rel_3_1_3",
+      "version": "3.1.3",
+      "release_date": "2024-08-19T00:00:00Z",
+      "title": "CloudDesk 3.1.3",
+      "release_notes": "CloudDesk 3.1.3 improved customer_support, integrations workflows.",
+      "features_added": [
+        "customer support enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor integrations fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "customer_support",
+        "integrations"
+      ]
+    },
+    {
+      "release_id": "rel_3_2_0",
+      "version": "3.2.0",
+      "release_date": "2024-09-19T00:00:00Z",
+      "title": "CloudDesk 3.2.0",
+      "release_notes": "CloudDesk 3.2.0 improved notifications workflows.",
+      "features_added": [
+        "notifications enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor notifications fixes"
+      ],
+      "known_issues": [
+        "Duplicate notifications can occur across time zones."
+      ],
+      "affected_product_areas": [
+        "notifications"
+      ]
+    },
+    {
+      "release_id": "rel_3_2_1",
+      "version": "3.2.1",
+      "release_date": "2024-10-20T00:00:00Z",
+      "title": "CloudDesk 3.2.1",
+      "release_notes": "CloudDesk 3.2.1 improved workspace_management, onboarding workflows.",
+      "features_added": [
+        "workspace management enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor onboarding fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "workspace_management",
+        "onboarding"
+      ]
+    },
+    {
+      "release_id": "rel_3_2_2",
+      "version": "3.2.2",
+      "release_date": "2024-11-20T00:00:00Z",
+      "title": "CloudDesk 3.2.2",
+      "release_notes": "CloudDesk 3.2.2 improved search, onboarding workflows.",
+      "features_added": [
+        "search enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor onboarding fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "search",
+        "onboarding"
+      ]
+    },
+    {
+      "release_id": "rel_3_2_3",
+      "version": "3.2.3",
+      "release_date": "2024-12-21T00:00:00Z",
+      "title": "CloudDesk 3.2.3",
+      "release_notes": "CloudDesk 3.2.3 improved notifications, customer_support workflows.",
+      "features_added": [
+        "notifications enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor customer support fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "notifications",
+        "customer_support"
+      ]
+    },
+    {
+      "release_id": "rel_3_3_0",
+      "version": "3.3.0",
+      "release_date": "2025-01-21T00:00:00Z",
+      "title": "CloudDesk 3.3.0",
+      "release_notes": "CloudDesk 3.3.0 improved permissions, workspace_management workflows.",
+      "features_added": [
+        "permissions enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor workspace management fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "permissions",
+        "workspace_management"
+      ]
+    },
+    {
+      "release_id": "rel_3_3_1",
+      "version": "3.3.1",
+      "release_date": "2025-02-21T00:00:00Z",
+      "title": "CloudDesk 3.3.1",
+      "release_notes": "CloudDesk 3.3.1 improved workspace_management, permissions workflows.",
+      "features_added": [
+        "workspace management enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor permissions fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "workspace_management",
+        "permissions"
+      ]
+    },
+    {
+      "release_id": "rel_3_3_2",
+      "version": "3.3.2",
+      "release_date": "2025-03-24T00:00:00Z",
+      "title": "CloudDesk 3.3.2",
+      "release_notes": "CloudDesk 3.3.2 improved integrations, notifications workflows.",
+      "features_added": [
+        "integrations enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor notifications fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "integrations",
+        "notifications"
+      ]
+    },
+    {
+      "release_id": "rel_3_3_3",
+      "version": "3.3.3",
+      "release_date": "2025-04-24T00:00:00Z",
+      "title": "CloudDesk 3.3.3",
+      "release_notes": "CloudDesk 3.3.3 improved notifications, workspace_management workflows.",
+      "features_added": [
+        "notifications enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor workspace management fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "notifications",
+        "workspace_management"
+      ]
+    },
+    {
+      "release_id": "rel_3_4_0",
+      "version": "3.4.0",
+      "release_date": "2025-05-25T00:00:00Z",
+      "title": "CloudDesk 3.4.0",
+      "release_notes": "CloudDesk 3.4.0 improved customer_support, onboarding workflows.",
+      "features_added": [
+        "customer support enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor onboarding fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "customer_support",
+        "onboarding"
+      ]
+    },
+    {
+      "release_id": "rel_3_4_1",
+      "version": "3.4.1",
+      "release_date": "2025-06-25T00:00:00Z",
+      "title": "CloudDesk 3.4.1",
+      "release_notes": "CloudDesk 3.4.1 improved notifications, permissions workflows.",
+      "features_added": [
+        "notifications enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor permissions fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "notifications",
+        "permissions"
+      ]
+    },
+    {
+      "release_id": "rel_3_4_2",
+      "version": "3.4.2",
+      "release_date": "2025-07-26T00:00:00Z",
+      "title": "CloudDesk 3.4.2",
+      "release_notes": "CloudDesk 3.4.2 improved workspace_management, notifications workflows.",
+      "features_added": [
+        "workspace management enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor notifications fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "workspace_management",
+        "notifications"
+      ]
+    },
+    {
+      "release_id": "rel_3_4_3",
+      "version": "3.4.3",
+      "release_date": "2025-08-26T00:00:00Z",
+      "title": "CloudDesk 3.4.3",
+      "release_notes": "CloudDesk 3.4.3 improved search, customer_support workflows.",
+      "features_added": [
+        "search enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor customer support fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "search",
+        "customer_support"
+      ]
+    },
+    {
+      "release_id": "rel_3_5_0",
+      "version": "3.5.0",
+      "release_date": "2025-09-26T00:00:00Z",
+      "title": "CloudDesk 3.5.0",
+      "release_notes": "CloudDesk 3.5.0 improved notifications, onboarding workflows.",
+      "features_added": [
+        "notifications enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor onboarding fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "notifications",
+        "onboarding"
+      ]
+    },
+    {
+      "release_id": "rel_3_5_1",
+      "version": "3.5.1",
+      "release_date": "2025-10-27T00:00:00Z",
+      "title": "CloudDesk 3.5.1",
+      "release_notes": "CloudDesk 3.5.1 improved reporting, workspace_management workflows.",
+      "features_added": [
+        "reporting enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor workspace management fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "reporting",
+        "workspace_management"
+      ]
+    },
+    {
+      "release_id": "rel_3_5_2",
+      "version": "3.5.2",
+      "release_date": "2025-11-27T00:00:00Z",
+      "title": "CloudDesk 3.5.2",
+      "release_notes": "CloudDesk 3.5.2 improved customer_support, search workflows.",
+      "features_added": [
+        "customer support enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor search fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "customer_support",
+        "search"
+      ]
+    },
+    {
+      "release_id": "rel_3_5_3",
+      "version": "3.5.3",
+      "release_date": "2025-12-28T00:00:00Z",
+      "title": "CloudDesk 3.5.3",
+      "release_notes": "CloudDesk 3.5.3 improved customer_support, permissions workflows.",
+      "features_added": [
+        "customer support enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor permissions fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "customer_support",
+        "permissions"
+      ]
+    },
+    {
+      "release_id": "rel_3_6_0",
+      "version": "3.6.0",
+      "release_date": "2026-01-28T00:00:00Z",
+      "title": "CloudDesk 3.6.0",
+      "release_notes": "CloudDesk 3.6.0 improved permissions, billing workflows.",
+      "features_added": [
+        "permissions enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor billing fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "permissions",
+        "billing"
+      ]
+    },
+    {
+      "release_id": "rel_3_6_1",
+      "version": "3.6.1",
+      "release_date": "2026-02-28T00:00:00Z",
+      "title": "CloudDesk 3.6.1",
+      "release_notes": "CloudDesk 3.6.1 improved customer_support, notifications workflows.",
+      "features_added": [
+        "customer support enhancements"
+      ],
+      "bugs_fixed": [
+        "Minor notifications fixes"
+      ],
+      "known_issues": [],
+      "affected_product_areas": [
+        "customer_support",
+        "notifications"
+      ]
+    }
+  ]
+}

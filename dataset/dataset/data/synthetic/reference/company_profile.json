@@ -1,0 +1,104 @@
+{
+  "company_name": "CloudDesk",
+  "company_description": "Fictional B2B SaaS company for reproducible Voice-of-Customer evaluation.",
+  "product_description": "A project-management and collaboration platform for planning work, coordinating teams, tracking client projects, and reporting delivery progress.",
+  "main_customer_jobs": [
+    "plan projects",
+    "assign tasks",
+    "coordinate clients",
+    "report delivery status",
+    "manage permissions",
+    "connect work tools"
+  ],
+  "features": [
+    "task boards",
+    "project timelines",
+    "client workspaces",
+    "SSO",
+    "bulk import",
+    "notifications",
+    "CSV/PDF reporting",
+    "mobile app",
+    "Slack/Teams/Jira/Salesforce/Drive integrations"
+  ],
+  "customer_segments": [
+    "individual",
+    "small_business",
+    "mid_market",
+    "enterprise",
+    "agency"
+  ],
+  "industries_served": [
+    "software",
+    "marketing",
+    "consulting",
+    "construction",
+    "healthcare",
+    "education",
+    "financial_services",
+    "retail",
+    "manufacturing"
+  ],
+  "product_areas": [
+    "onboarding",
+    "permissions",
+    "notifications",
+    "reporting",
+    "integrations",
+    "mobile_application",
+    "billing",
+    "workspace_management",
+    "search",
+    "customer_support"
+  ],
+  "product_limitations": [
+    "large exports may be slow",
+    "offline mobile editing is limited",
+    "complex enterprise onboarding can require services",
+    "search favors exact matches"
+  ],
+  "integrations": [
+    "Slack",
+    "Microsoft Teams",
+    "Google Drive",
+    "Jira",
+    "Salesforce"
+  ],
+  "support_model": {
+    "starter": "email",
+    "team": "email and chat",
+    "business": "priority chat",
+    "enterprise": "dedicated CSM and onboarding services"
+  },
+  "known_hidden_customer_problems": [
+    "enterprise_onboarding",
+    "agency_workspace_switching",
+    "mobile_offline_access",
+    "release_3_2_notification_regression",
+    "smb_pricing_concern",
+    "large_export_failure",
+    "search_complaints",
+    "integration_reliability"
+  ],
+  "expected_positive_feedback": [
+    "fast support",
+    "clear workarounds",
+    "useful collaboration",
+    "helpful account managers"
+  ],
+  "expected_counterevidence": [
+    "paid onboarding reduces enterprise issues",
+    "some SMBs are unaffected by SSO",
+    "constant-connectivity mobile users rarely request offline mode"
+  ],
+  "business_terminology": [
+    "ACV",
+    "MRR",
+    "renewal",
+    "opportunity",
+    "churn",
+    "customer health",
+    "implementation",
+    "workspace"
+  ]
+}

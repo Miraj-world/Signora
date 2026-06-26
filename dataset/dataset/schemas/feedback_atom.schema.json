@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "voc_schema_v1",
+  "required": [
+    "atom_id",
+    "feedback_id",
+    "statement",
+    "feedback_type",
+    "product_area",
+    "evidence_role",
+    "human_review_status"
+  ],
+  "properties": {
+    "data_origin": [
+      "scraped",
+      "api_collected",
+      "synthetic",
+      "manually_created",
+      "inferred"
+    ],
+    "validation_status": [
+      "accepted",
+      "quarantined_wrong_product",
+      "quarantined_ambiguous_product",
+      "quarantined_off_topic",
+      "quarantined_missing_context"
+    ]
+  }
+}
