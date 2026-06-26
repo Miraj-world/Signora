@@ -1,6 +1,7 @@
 """Shared, provider-neutral benchmark primitives."""
 import hashlib
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,6 +15,21 @@ ITEMS_PATH = DATASET_ROOT / "data" / "processed" / "feedback_items.jsonl"
 EVAL_DIR = DATASET_ROOT / "data" / "evaluation"
 DEFAULT_INDEX_ROOT = DATASET_ROOT / "benchmark_indexes"
 DEFAULT_RESULTS_ROOT = DATASET_ROOT / "benchmark_results"
+
+
+def load_dotenv(path=None):
+    """Load local benchmark credentials without overwriting real environment values."""
+    path = Path(path) if path else ROOT / ".env"
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if key:
+            os.environ.setdefault(key, value.strip().strip('"').strip("'"))
 
 
 def read_json(path):

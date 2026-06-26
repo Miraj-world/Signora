@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from common import normalize
+from common import load_dotenv, normalize
 
 
 MODELS = {
@@ -22,6 +22,7 @@ def available_slugs():
 
 
 def create_encoder(slug):
+    load_dotenv()
     if slug not in MODELS:
         raise ValueError(f"unknown model {slug}; choose one of: {', '.join(available_slugs())}")
     spec = MODELS[slug]
