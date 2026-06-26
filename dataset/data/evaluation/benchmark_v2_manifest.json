@@ -1,0 +1,14 @@
+{
+  "version": "retrieval_questions_v2_predicate_backed",
+  "question_count": 59,
+  "abstention_count": 20,
+  "corpus_atom_count": 8897,
+  "question_types": {
+    "filtered_topic_retrieval": 59
+  },
+  "ground_truth": "metadata predicates verified against the corpus; canonical IDs are diverse citation examples",
+  "deprecated": [
+    "retrieval_questions.jsonl",
+    "abstention_questions.jsonl"
+  ]
+}

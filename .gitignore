@@ -44,6 +44,8 @@ exports/
 
 # Rebuildable local semantic index
 dataset/index/
+dataset/benchmark_indexes/
+dataset/benchmark_results/
 
 # Raw handoff archives and private source inputs should live in Drive.
 *.zip

@@ -63,11 +63,33 @@ def keyword_score(query_tokens, text):
     return overlap / max(1, sum(query_tokens.values()))
 
 
-def retrieve(query_embedding, query_text, metadata, embeddings, top_k=8, semantic_weight=0.75):
+def row_matches_filters(row, filters):
+    """Return whether a metadata row satisfies all explicit benchmark filters."""
+    for field, allowed in (filters or {}).items():
+        if allowed and row.get(field) not in allowed:
+            return False
+    return True
+
+
+def row_matches_relevance(row, rules):
+    """Evaluate the benchmark's auditable metadata predicate for a result row."""
+    if not rules:
+        return False
+    for key, allowed in rules.items():
+        if not key.endswith("_any"):
+            continue
+        if row.get(key[:-4]) not in allowed:
+            return False
+    return True
+
+
+def retrieve(query_embedding, query_text, metadata, embeddings, top_k=8, semantic_weight=0.75, filters=None):
     semantic_scores = embeddings @ query_embedding
     query_tokens = Counter(tokenize(query_text))
     candidates = []
     for row in metadata:
+        if not row_matches_filters(row, filters):
+            continue
         position = row["position"]
         semantic = float(semantic_scores[position])
         keyword = keyword_score(query_tokens, row.get("search_text", ""))
@@ -109,21 +131,26 @@ def compute_metrics(questions, encode_fn, metadata, embeddings, top_k=8, semanti
         difficulty = q.get("difficulty", "medium")
 
         qe = encode_fn(query)
-        results = retrieve(qe, query, metadata, embeddings, top_k=top_k, semantic_weight=semantic_weight)
+        results = retrieve(qe, query, metadata, embeddings, top_k=top_k, semantic_weight=semantic_weight, filters=q.get("filters"))
         returned_ids = [row.get("atom_id") for _, row in results]
 
+        # v2 judges relevance against a corpus-verified predicate. v1 retains
+        # its legacy exact-ID behavior so historic scripts remain readable.
+        relevant = (lambda row: row_matches_relevance(row, q["relevance_rules"])) if q.get("relevance_rules") else (lambda row: row.get("atom_id") in expected)
+        relevant_rows = [row for _, row in results if relevant(row)]
+
         recall = len(set(returned_ids) & expected) / len(expected) if expected else 0.0
-        precision = len(set(returned_ids) & expected) / len(returned_ids) if returned_ids else 0.0
+        precision = len(relevant_rows) / len(results) if results else 0.0
 
         mrr = 0.0
         for rank, aid in enumerate(returned_ids, 1):
-            if aid in expected:
+            if relevant(results[rank - 1][1]):
                 mrr = 1.0 / rank
                 break
 
-        hit = 1.0 if any(aid in expected for aid in returned_ids) else 0.0
+        hit = 1.0 if relevant_rows else 0.0
 
-        dcg = sum(1.0 / math.log2(rank + 1) for rank, aid in enumerate(returned_ids, 1) if aid in expected)
+        dcg = sum(1.0 / math.log2(rank + 1) for rank, (_, row) in enumerate(results, 1) if relevant(row))
         ideal_hits = min(len(expected), top_k)
         idcg = sum(1.0 / math.log2(r + 1) for r in range(1, ideal_hits + 1))
         ndcg = dcg / idcg if idcg > 0 else 0.0
@@ -195,3 +222,20 @@ def save_results(slug, model_name, overall, by_difficulty, abstention_correct, a
 def normalize_vector(vec):
     norm = np.linalg.norm(vec)
     return vec / norm if norm > 0 else vec
+
+
+def validate_benchmark(questions, metadata, embeddings, model_name=None):
+    """Fail early for stale IDs, invalid filters, and malformed indexes."""
+    if len(metadata) != len(embeddings):
+        raise ValueError(f"index metadata/embedding count mismatch: {len(metadata)} != {len(embeddings)}")
+    atom_ids = {row.get("atom_id") for row in metadata}
+    for q in questions:
+        missing = set(q.get("expected_atom_ids", [])) - atom_ids
+        if missing:
+            raise ValueError(f"{q.get('question_id')} references atoms absent from index: {sorted(missing)[:3]}")
+        for atom_id in q.get("expected_atom_ids", []):
+            row = next(row for row in metadata if row.get("atom_id") == atom_id)
+            if not row_matches_filters(row, q.get("filters")):
+                raise ValueError(f"{q.get('question_id')} gold atom {atom_id} violates its filters")
+            if q.get("relevance_rules") and not row_matches_relevance(row, q["relevance_rules"]):
+                raise ValueError(f"{q.get('question_id')} gold atom {atom_id} violates its relevance rules")

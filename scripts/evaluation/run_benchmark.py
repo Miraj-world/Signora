@@ -21,8 +21,8 @@ RESULTS_DIR = DATASET_ROOT / "results"
 sys.path.insert(0, str(Path(__file__).parent))
 import eval_utils
 
-TODAY = "2026-06-25"
-EVAL_VERSION = "retrieval_questions_v1 (130q + 21 abstain)"
+TODAY = "2026-06-26"
+EVAL_VERSION = "retrieval_questions_v2_predicate_backed (59q + 20 abstain)"
 
 MODELS = [
     {"slug": "minilm",       "name": "all-MiniLM-L6-v2",        "backend": "st",     "dims": 384,  "cost_per_1k": 0.0},
@@ -129,7 +129,7 @@ def compute_extended_metrics(questions, abstention_questions, encode_fn, metadat
 
         t0 = time.perf_counter()
         qe = encode_fn(query)
-        results_10 = eval_utils.retrieve(qe, query, metadata, embeddings, top_k=10)
+        results_10 = eval_utils.retrieve(qe, query, metadata, embeddings, top_k=10, filters=q.get("filters"))
         latency_ms = (time.perf_counter() - t0) * 1000
         latencies.append(latency_ms)
 
@@ -137,9 +137,12 @@ def compute_extended_metrics(questions, abstention_questions, encode_fn, metadat
         ids_5 = ids_10[:5]
         top1_semantics.append(float(embeddings[results_10[0][1]["position"]] @ qe) if results_10 else 0.0)
 
+        # Canonical citation recall is reported separately. Precision measures
+        # all corpus rows satisfying the question's verified relevance rule.
         r5 = len(set(ids_5) & expected) / len(expected) if expected else 0.0
         r10 = len(set(ids_10) & expected) / len(expected) if expected else 0.0
-        p5 = len(set(ids_5) & expected) / len(ids_5) if ids_5 else 0.0
+        relevance = q.get("relevance_rules")
+        p5 = (sum(eval_utils.row_matches_relevance(row, relevance) for _, row in results_10[:5]) / len(ids_5)) if ids_5 and relevance else (len(set(ids_5) & expected) / len(ids_5) if ids_5 else 0.0)
 
         recalls_5.append(r5)
         recalls_10.append(r10)
@@ -148,27 +151,35 @@ def compute_extended_metrics(questions, abstention_questions, encode_fn, metadat
     def avg(lst):
         return sum(lst) / len(lst) if lst else 0.0
 
-    # Abstention
-    abstain_correct = 0
-    for q in abstention_questions:
-        qe = encode_fn(q["question"])
-        results = eval_utils.retrieve(qe, q["question"], metadata, embeddings, top_k=8)
-        if not results or max(s for s, _ in results) < 0.5:
-            abstain_correct += 1
-
     return {
         "recall_at_5":  avg(recalls_5),
         "recall_at_10": avg(recalls_10),
         "precision_at_5": avg(prec_5),
         "citation_accuracy": avg(prec_5),
         "unsupported_claim_rate": 1.0 - avg(prec_5),
-        "abstention_accuracy_num": abstain_correct,
-        "abstention_accuracy_den": len(abstention_questions),
         "avg_latency_ms": avg(latencies),
         "mean_top1_semantic": avg(top1_semantics),
         "n_questions": len(non_abstain),
         "ground_truth_status": "unverified_suggestion_pending_human_review",
     }
+
+
+def top_score(question, encode_fn, metadata, embeddings):
+    qe = encode_fn(question["question"])
+    results = eval_utils.retrieve(qe, question["question"], metadata, embeddings, top_k=1, filters=question.get("filters"))
+    return results[0][0] if results else float("-inf")
+
+
+def calibrate_and_score_abstention(validation_questions, validation_abstention, test_questions, test_abstention, encode_fn, metadata, embeddings):
+    """Calibrate a separate no-answer threshold per model, then score only held-out cases."""
+    positives = [top_score(q, encode_fn, metadata, embeddings) for q in validation_questions]
+    negatives = [top_score(q, encode_fn, metadata, embeddings) for q in validation_abstention]
+    candidates = sorted(set(positives + negatives))
+    if not candidates:
+        return 0.5, 0, len(test_abstention)
+    threshold = max(candidates, key=lambda t: ((sum(s >= t for s in positives) / len(positives)) + (sum(s < t for s in negatives) / len(negatives))) / 2)
+    correct = sum(top_score(q, encode_fn, metadata, embeddings) < threshold for q in test_abstention)
+    return threshold, correct, len(test_abstention)
 
 
 def fmt(val, kind="pct"):
@@ -251,11 +262,15 @@ def save_model_results(model_info, metrics, reason=None):
 
 def main():
     eval_utils.load_dotenv()
-    questions = eval_utils.read_jsonl(eval_utils.EVAL_DIR / "retrieval_questions.jsonl")
-    abstention_questions = eval_utils.read_jsonl(eval_utils.EVAL_DIR / "abstention_questions.jsonl")
+    questions = eval_utils.read_jsonl(eval_utils.EVAL_DIR / "retrieval_questions_v2.jsonl")
+    abstention_questions = eval_utils.read_jsonl(eval_utils.EVAL_DIR / "abstention_questions_v2.jsonl")
+    test_questions = [q for q in questions if q.get("split") == "test"]
+    validation_questions = [q for q in questions if q.get("split") == "validation"]
+    test_abstention = [q for q in abstention_questions if q.get("split") == "test"]
+    validation_abstention = [q for q in abstention_questions if q.get("split") == "validation"]
 
     print("# Signora Retrieval Benchmark\n")
-    print(f"Evaluation set: {len(questions)} retrieval questions + {len(abstention_questions)} abstention cases")
+    print(f"Evaluation set: {len(test_questions)} test retrieval questions + {len(test_abstention)} test abstention cases")
     print(f"Date: {TODAY}\n")
 
     all_results = []
@@ -279,9 +294,20 @@ def main():
             continue
 
         manifest, metadata, embeddings = eval_utils.load_index(index_dir)
+        if manifest.get("model") != model_info["name"]:
+            reason = f"index model mismatch: manifest has {manifest.get('model')}, expected {model_info['name']}"
+            print_model_table(model_info, None, reason=reason)
+            save_model_results(model_info, None, reason=reason)
+            all_results.append((model_info, None, reason))
+            continue
+        eval_utils.validate_benchmark(questions, metadata, embeddings, model_info["name"])
         print(f"\n[{slug}] Evaluating {model_info['name']} ({manifest['record_count']} atoms)...")
         t_start = time.time()
-        metrics = compute_extended_metrics(questions, abstention_questions, encode_fn, metadata, embeddings)
+        metrics = compute_extended_metrics(test_questions, test_abstention, encode_fn, metadata, embeddings)
+        threshold, abstain_correct, abstain_total = calibrate_and_score_abstention(validation_questions, validation_abstention, test_questions, test_abstention, encode_fn, metadata, embeddings)
+        metrics["abstention_accuracy_num"] = abstain_correct
+        metrics["abstention_accuracy_den"] = abstain_total
+        metrics["abstention_threshold"] = threshold
         elapsed = time.time() - t_start
         print(f"[{slug}] Done in {elapsed:.1f}s")
 
