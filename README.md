@@ -65,10 +65,19 @@ Install the retrieval dependencies with Python 3.12:
 py -3.12 -m pip install -r requirements.txt
 ```
 
-Build the local embedding index:
+Build the production embedding index. The default profile is `openai_small`,
+which uses `text-embedding-3-small` because it was the practical winner in the
+benchmark: it led the core retrieval metrics while being cheaper than
+`text-embedding-3-large`.
 
 ```powershell
 py -3.12 scripts\build_retrieval_index.py
+```
+
+For a fully local/offline baseline, build with MPNet instead:
+
+```powershell
+py -3.12 scripts\build_retrieval_index.py --profile mpnet
 ```
 
 The generated semantic index is written to `dataset/index/`. It is intentionally ignored by git because it is rebuildable and model-dependent.
@@ -85,11 +94,36 @@ Optional filters:
 py -3.12 scripts\query_retrieval.py "Which customers complain about delayed notifications?" --product-area notifications --top-k 5
 ```
 
+The query pipeline uses the same model recorded in the index manifest and fuses
+dense semantic similarity with keyword overlap. The benchmark showed keyword
+fusion improved retrieval ranking for both local models, so the production
+default keeps fusion enabled with `--semantic-weight 0.75`.
+
+## Repeatable Benchmark Habit
+
+Use the v2 benchmark whenever the corpus, document recipe, embedding model,
+filters, or ranking logic changes:
+
+```powershell
+py -3.12 scripts\benchmark\run_reproducible_eval.py --models openai_small mpnet
+```
+
+That command rebuilds model-specific indexes, evaluates dense retrieval and the
+production-like keyword-fusion pipeline, scores abstention, and regenerates the
+benchmark report under `dataset/benchmark_results/`.
+
+Current interpretation from the completed experiment:
+
+- `text-embedding-3-small` is the production default for this benchmark.
+- `all-mpnet-base-v2` is the strongest local baseline.
+- Keyword fusion improved retrieval ranking for both local models.
+- MPNet dense retrieval produced the strongest held-out local abstention result.
+
 ## Suggested Next Decisions
 
-- Decide whether to filter low-information atoms such as generic caveats before ranking.
+- Do error analysis on the weak queries for `text-embedding-3-small`.
 - Decide whether parent-thread context should be retrieved automatically for Reddit comments.
-- Decide whether the next milestone should be evaluation metrics, answer generation, or a small UI for querying evidence.
+- Add answer generation on top of retrieved evidence, with citations back to atom IDs and source feedback IDs.
 
 ## Notes
 
