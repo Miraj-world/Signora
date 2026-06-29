@@ -76,6 +76,11 @@ def row_matches_relevance(row, rules):
     if not rules:
         return False
     for key, allowed in rules.items():
+        if key == "text_any":
+            text = " ".join(str(row.get(field) or "") for field in ("statement", "source_context", "search_text")).lower()
+            if not any(term.lower() in text for term in allowed):
+                return False
+            continue
         if not key.endswith("_any"):
             continue
         if row.get(key[:-4]) not in allowed:

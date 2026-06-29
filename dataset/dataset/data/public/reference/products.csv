@@ -1,4 +1,0 @@
-product_id,product_name,brand,category,source_url,retrieved_at
-amazon_echo_dot,Amazon Echo Dot,Amazon,smart speaker,provided_csv_sample,2026-06-25T03:53:05Z
-sony_wh1000xm5,Sony WH-1000XM5,Sony,headphones,provided_csv_sample,2026-06-25T03:53:05Z
-wyze_cam_v3,Wyze Cam v3,Wyze,security camera,provided_csv_sample,2026-06-25T03:53:05Z

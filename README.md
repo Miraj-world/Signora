@@ -119,6 +119,19 @@ Current interpretation from the completed experiment:
 - Keyword fusion improved retrieval ranking for both local models.
 - MPNet dense retrieval produced the strongest held-out local abstention result.
 
+The lower-level benchmark runner uses 59 predicate-backed retrieval questions
+and 20 no-answer cases. It reports exact canonical citation recall separately
+from predicate-backed evidence coverage so broad semantic retrieval questions
+are not graded only against one small set of pre-selected atom IDs:
+
+```powershell
+py -3.12 scripts\evaluation\run_benchmark.py
+```
+
+Build one isolated index per model first, for example `py -3.12
+scripts\embeddings\embed_minilm.py`; indexes live under
+`dataset/index/<model-slug>/` and are intentionally ignored by git.
+
 ## Suggested Next Decisions
 
 - Do error analysis on the weak queries for `text-embedding-3-small`.

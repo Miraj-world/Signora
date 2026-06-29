@@ -1,7 +1,0 @@
-{
-  "excluded_from_normal_vector_index": [
-    "data/evaluation/**",
-    "data/synthetic/reference/hidden_patterns.json"
-  ],
-  "reason": "Evaluation answer keys and hidden patterns must not be retrievable during normal RAG questions."
-}
