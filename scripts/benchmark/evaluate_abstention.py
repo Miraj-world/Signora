@@ -26,7 +26,7 @@ def select_threshold(positive_scores, negative_scores):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("model")
-    parser.add_argument("--mode", choices=["dense", "pipeline"], default="dense")
+    parser.add_argument("--mode", choices=["dense", "pipeline", "recall"], default="dense")
     parser.add_argument("--index-root", default=str(DEFAULT_INDEX_ROOT))
     parser.add_argument("--results-root", default=str(DEFAULT_RESULTS_ROOT))
     args = parser.parse_args()

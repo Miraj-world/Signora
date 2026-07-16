@@ -1,13 +1,15 @@
-"""Evaluate one model index as dense-only or as the production-like pipeline."""
+"""Evaluate one model index as dense-only, pipeline, or recall-oriented retrieval."""
 import argparse
 import math
 import time
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
 
 from common import (DEFAULT_INDEX_ROOT, DEFAULT_RESULTS_ROOT, EVAL_DIR, corpus_fingerprint,
-                    load_index, read_jsonl, row_matches_filters, row_matches_relevance, write_json)
+                    keyword_score, load_index, read_jsonl, row_matches_filters,
+                    row_matches_relevance, tokenize, write_json)
 from models import create_encoder
 
 
@@ -34,17 +36,55 @@ def validate(index_manifest, metadata, embeddings, questions, slug):
                 raise ValueError(f"{question['question_id']} gold atom violates its relevance rules")
 
 
-def ranked(query_vector, question, metadata, embeddings, mode, top_k):
+def metadata_topic_score(row, question_tokens):
+    """Score query overlap against structured metadata fields."""
+    if not question_tokens:
+        return 0.0
+    metadata_text = " ".join(str(row.get(field) or "") for field in ("topic", "subtopic", "product_area", "feedback_type", "severity", "customer_segment"))
+    metadata_tokens = set(tokenize(metadata_text.replace("_", " ")))
+    if not metadata_tokens:
+        return 0.0
+    return len(set(question_tokens) & metadata_tokens) / max(1, min(len(set(question_tokens)), len(metadata_tokens)))
+
+
+def pipeline_score(semantic, question_tokens, row):
+    keyword = keyword_score(question_tokens, row.get("search_text"))
+    return 0.75 * semantic + 0.25 * keyword
+
+
+def recall_score(semantic, question_tokens, row):
+    keyword = keyword_score(question_tokens, row.get("search_text"))
+    metadata = metadata_topic_score(row, question_tokens)
+    return (0.55 * semantic) + (0.20 * keyword) + (0.25 * metadata)
+
+
+def ranked(query_vector, question, metadata, embeddings, mode, top_k, candidate_pool=250):
     scores = embeddings @ query_vector
+    question_tokens = Counter(tokenize(question["question"]))
     candidates = []
     for row in metadata:
         if row_matches_filters(row, question.get("filters")):
             score = float(scores[row["position"]])
             if mode == "pipeline":
-                tokens = set(question["question"].lower().split())
-                score = 0.75 * score + 0.25 * (len(tokens & set(row["search_text"].lower().split())) / max(1, len(tokens)))
+                score = pipeline_score(score, question_tokens, row)
+            elif mode == "recall":
+                score = recall_score(score, question_tokens, row)
             candidates.append((score, row))
     candidates.sort(key=lambda pair: pair[0], reverse=True)
+
+    if mode == "recall":
+        broad = [
+            pair for pair in candidates
+            if metadata_topic_score(pair[1], question_tokens) > 0 or keyword_score(question_tokens, pair[1].get("search_text")) > 0
+        ]
+        broad.sort(key=lambda pair: pair[0], reverse=True)
+        by_atom = {}
+        for score, row in candidates[:candidate_pool] + broad[:candidate_pool]:
+            atom_id = row.get("atom_id")
+            if atom_id not in by_atom or score > by_atom[atom_id][0]:
+                by_atom[atom_id] = (score, row)
+        candidates = sorted(by_atom.values(), key=lambda pair: pair[0], reverse=True)
+
     selected, seen_feedback = [], set()
     for score, row in candidates:
         if row["feedback_id"] in seen_feedback:
@@ -57,7 +97,7 @@ def ranked(query_vector, question, metadata, embeddings, mode, top_k):
 
 
 def score_questions(questions, encode, metadata, embeddings, mode, top_k):
-    rows, metrics = [], {"canonical_recall": [], "precision": [], "mrr": [], "ndcg": []}
+    rows, metrics = [], {"canonical_recall": [], "precision": [], "predicate_coverage": [], "mrr": [], "ndcg": []}
     for question in questions:
         started = time.perf_counter()
         vector = encode([question["question"]], "query")[0]
@@ -67,21 +107,32 @@ def score_questions(questions, encode, metadata, embeddings, mode, top_k):
         returned = [row["atom_id"] for _, row in results]
         canonical_recall = len(expected & set(returned)) / len(expected)
         precision = sum(relevance) / len(results) if results else 0.0
+        predicate_denom = min(top_k, question.get("matching_atom_count") or len(expected))
+        predicate_coverage = sum(relevance) / predicate_denom if predicate_denom else 0.0
         first = next((i for i, relevant in enumerate(relevance, 1) if relevant), None)
         mrr = 1 / first if first else 0.0
         dcg = sum(1 / math.log2(i + 1) for i, relevant in enumerate(relevance, 1) if relevant)
         ideal = sum(1 / math.log2(i + 1) for i in range(1, min(sum(relevance), top_k) + 1))
         ndcg = dcg / ideal if ideal else 0.0
-        for name, value in [("canonical_recall", canonical_recall), ("precision", precision), ("mrr", mrr), ("ndcg", ndcg)]:
+        for name, value in [("canonical_recall", canonical_recall), ("precision", precision), ("predicate_coverage", predicate_coverage), ("mrr", mrr), ("ndcg", ndcg)]:
             metrics[name].append(value)
-        rows.append({"question_id": question["question_id"], "canonical_recall": canonical_recall, "precision_at_k": precision, "mrr": mrr, "ndcg": ndcg, "latency_ms": (time.perf_counter() - started) * 1000, "results": [{"atom_id": row["atom_id"], "score": score, "relevant": relevant} for (score, row), relevant in zip(results, relevance)]})
+        rows.append({
+            "question_id": question["question_id"],
+            "canonical_recall": canonical_recall,
+            "precision_at_k": precision,
+            "predicate_coverage_at_k": predicate_coverage,
+            "mrr": mrr,
+            "ndcg": ndcg,
+            "latency_ms": (time.perf_counter() - started) * 1000,
+            "results": [{"atom_id": row["atom_id"], "score": score, "relevant": relevant} for (score, row), relevant in zip(results, relevance)],
+        })
     return rows, {f"{name}_at_{top_k}": sum(values) / len(values) if values else 0.0 for name, values in metrics.items()}
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("model", choices=None)
-    parser.add_argument("--mode", choices=["dense", "pipeline"], default="dense")
+    parser.add_argument("--mode", choices=["dense", "pipeline", "recall"], default="dense")
     parser.add_argument("--split", choices=["validation", "test"], default="test")
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--index-root", default=str(DEFAULT_INDEX_ROOT))

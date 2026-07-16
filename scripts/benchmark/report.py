@@ -24,19 +24,21 @@ def main():
             abstention[key] = payload
         elif "metrics" in payload:
             retrieval[key] = payload
-    lines = ["# Signora Embedding Benchmark v2", "", "All rows use the same corpus snapshot and document recipe.", "", "| Model | Mode | Canonical Recall | Precision | MRR | nDCG | Abstention Balanced Accuracy |", "|---|---|---:|---:|---:|---:|---:|"]
+    lines = ["# Signora Embedding Benchmark v2", "", "All rows use the same corpus snapshot and document recipe.", "", "| Model | Mode | Canonical Recall | Predicate Coverage | Precision | MRR | nDCG | Abstention Balanced Accuracy |", "|---|---|---:|---:|---:|---:|---:|---:|"]
     for key in sorted(retrieval):
         result = retrieval[key]
         metrics = result["metrics"]
         suffix = f"_at_{result['top_k']}"
         abstain = abstention.get(key, {})
-        lines.append("| {model} | {mode} | {recall} | {precision} | {mrr} | {ndcg} | {abstain} |".format(
+        lines.append("| {model} | {mode} | {recall} | {coverage} | {precision} | {mrr} | {ndcg} | {abstain} |".format(
             model=result["model"], mode=result["mode"],
-            recall=value(metrics.get("canonical_recall" + suffix)), precision=value(metrics.get("precision" + suffix)),
+            recall=value(metrics.get("canonical_recall" + suffix)),
+            coverage=value(metrics.get("predicate_coverage" + suffix)),
+            precision=value(metrics.get("precision" + suffix)),
             mrr=value(metrics.get("mrr" + suffix)), ndcg=value(metrics.get("ndcg" + suffix)),
             abstain=value(abstain.get("test_balanced_accuracy")),
         ))
-    lines.extend(["", "`Canonical Recall` measures recovery of curated evidence examples. Precision, MRR, and nDCG use the full predicate-backed relevance definition. Abstention thresholds are selected only from the validation split."])
+    lines.extend(["", "`Canonical Recall` measures recovery of curated evidence examples. `Predicate Coverage` measures broader verified evidence coverage. Precision, MRR, and nDCG use the full predicate-backed relevance definition. Abstention thresholds are selected only from the validation split."])
     output = Path(args.output) if args.output else root / "benchmark_report.md"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines) + "\n", encoding="utf-8")

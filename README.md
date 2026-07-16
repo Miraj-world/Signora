@@ -112,6 +112,17 @@ That command rebuilds model-specific indexes, evaluates dense retrieval and the
 production-like keyword-fusion pipeline, scores abstention, and regenerates the
 benchmark report under `dataset/benchmark_results/`.
 
+To compare the recall-oriented retrieval pass against the production-like
+hybrid baseline, include the `recall` mode:
+
+```powershell
+py -3.12 scripts\benchmark\run_reproducible_eval.py --models openai_small --modes pipeline recall
+```
+
+The recall mode keeps the same explicit metadata filters, gathers a broader
+candidate pool using query overlap with structured topic metadata and search
+text, then reranks before the answer-generation step.
+
 Current interpretation from the completed experiment:
 
 - `text-embedding-3-small` is the production default for this benchmark.

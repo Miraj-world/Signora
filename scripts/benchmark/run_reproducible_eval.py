@@ -20,7 +20,7 @@ def run(command: list[str]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build indexes, evaluate retrieval, evaluate abstention, and write the benchmark report.")
     parser.add_argument("--models", nargs="+", default=["openai_small", "mpnet"], choices=available_slugs())
-    parser.add_argument("--modes", nargs="+", default=["dense", "pipeline"], choices=["dense", "pipeline"])
+    parser.add_argument("--modes", nargs="+", default=["dense", "pipeline"], choices=["dense", "pipeline", "recall"])
     parser.add_argument("--batch-size", type=int, default=32)
     args = parser.parse_args()
 
