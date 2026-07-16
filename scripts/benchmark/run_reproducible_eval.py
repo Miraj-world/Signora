@@ -33,6 +33,9 @@ def main() -> None:
             run([py, "scripts/benchmark/evaluate_abstention.py", model, "--mode", mode])
 
     run([py, "scripts/benchmark/report.py"])
+    if {"pipeline", "recall"}.issubset(args.modes):
+        for model in args.models:
+            run([py, "scripts/benchmark/quality_gate.py", "--model", model])
 
 
 if __name__ == "__main__":

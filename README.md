@@ -80,12 +80,22 @@ For a fully local/offline baseline, build with MPNet instead:
 py -3.12 scripts\build_retrieval_index.py --profile mpnet
 ```
 
-The generated semantic index is written to `dataset/index/`. It is intentionally ignored by git because it is rebuildable and model-dependent.
+The generated semantic index is written to `dataset/index/<profile>/`. It is
+intentionally ignored by git because it is rebuildable and model-dependent.
 
 Run a retrieval query:
 
 ```powershell
 py -3.12 scripts\query_retrieval.py "Why are enterprise administrators struggling with onboarding?" --top-k 5
+```
+
+The production query command now defaults to the recall-oriented pass. It
+combines semantic, keyword, and metadata/topic candidate routes before
+reranking and deduplicating the evidence sent to answer generation. Use
+`--mode pipeline` to compare against the previous hybrid baseline:
+
+```powershell
+py -3.12 scripts\query_retrieval.py "Why are enterprise administrators struggling with onboarding?" --mode pipeline --top-k 5
 ```
 
 Optional filters:
@@ -117,11 +127,16 @@ hybrid baseline, include the `recall` mode:
 
 ```powershell
 py -3.12 scripts\benchmark\run_reproducible_eval.py --models openai_small --modes pipeline recall
+py -3.12 scripts\benchmark\quality_gate.py --model openai_small
 ```
 
 The recall mode keeps the same explicit metadata filters, gathers a broader
 candidate pool using query overlap with structured topic metadata and search
 text, then reranks before the answer-generation step.
+
+The quality gate requires at least `0.95` predicate coverage and `0.95`
+abstention balanced accuracy, with no precision or canonical-recall regression
+against the hybrid baseline.
 
 Current interpretation from the completed experiment:
 

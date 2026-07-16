@@ -3,18 +3,17 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
-from collections import Counter
 from pathlib import Path
 
 import numpy as np
 
-from retrieval_models import create_encoder
+from retrieval_models import DEFAULT_PROFILE, create_encoder, profile_for_model, resolve_profile
+from retrieval_strategy import ScoredRow, rank_rows, tokenize
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = ROOT / "dataset"
-DEFAULT_INDEX_DIR = DATASET_ROOT / "index"
+DEFAULT_INDEX_ROOT = DATASET_ROOT / "index"
 
 
 def read_json(path: Path) -> dict:
@@ -23,20 +22,6 @@ def read_json(path: Path) -> dict:
 
 def read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
-
-
-def tokenize(text: str | None) -> list[str]:
-    return [token for token in re.findall(r"[a-z0-9][a-z0-9_-]*", (text or "").lower()) if len(token) > 1]
-
-
-def keyword_score(query_tokens: Counter, text: str | None) -> float:
-    if not query_tokens:
-        return 0.0
-    text_counts = Counter(tokenize(text))
-    if not text_counts:
-        return 0.0
-    overlap = sum(min(text_counts[token], count) for token, count in query_tokens.items())
-    return overlap / max(1, sum(query_tokens.values()))
 
 
 def passes_filters(row: dict, args: argparse.Namespace) -> bool:
@@ -59,33 +44,53 @@ def load_index(index_dir: Path) -> tuple[dict, list[dict], np.ndarray]:
     return manifest, metadata, embeddings
 
 
-def rank(query: str, metadata: list[dict], embeddings: np.ndarray, manifest: dict, args: argparse.Namespace) -> list[tuple]:
-    profile = manifest.get("embedding_profile")
+def resolve_index_dir(requested: str | None) -> Path:
+    if requested:
+        return Path(requested)
+    profile, _ = resolve_profile(None)
+    profile_dir = DEFAULT_INDEX_ROOT / profile
+    if (profile_dir / "index_manifest.json").exists():
+        return profile_dir
+    return DEFAULT_INDEX_ROOT
+
+
+def manifest_profile(manifest: dict) -> str | None:
+    return manifest.get("embedding_profile") or profile_for_model(manifest.get("model"))
+
+
+def rank(query: str, metadata: list[dict], embeddings: np.ndarray, manifest: dict, args: argparse.Namespace) -> list[ScoredRow]:
+    profile = manifest_profile(manifest)
+    if not profile:
+        raise ValueError(
+            "Index manifest does not identify a supported embedding profile. "
+            "Rebuild it with scripts/build_retrieval_index.py."
+        )
     _, _, encode = create_encoder(profile)
     query_embedding = encode([query], "query")[0]
+    if embeddings.shape[1] != query_embedding.shape[0]:
+        raise ValueError(
+            f"Index/query dimension mismatch: index={embeddings.shape[1]} query={query_embedding.shape[0]} "
+            f"profile={profile}. Rebuild the index for that profile."
+        )
     semantic_scores = embeddings @ query_embedding
-    query_tokens = Counter(tokenize(query))
-    candidates = []
-
-    for row in metadata:
-        if not passes_filters(row, args):
-            continue
-        position = row["position"]
-        semantic = float(semantic_scores[position])
-        keyword = keyword_score(query_tokens, row.get("search_text"))
-        fused = (args.semantic_weight * semantic) + ((1 - args.semantic_weight) * keyword)
-        candidates.append((fused, semantic, keyword, row))
-
-    candidates.sort(key=lambda item: item[0], reverse=True)
-    return candidates
+    filtered = [row for row in metadata if passes_filters(row, args)]
+    return rank_rows(
+        query,
+        filtered,
+        semantic_scores,
+        mode=args.mode,
+        candidate_pool=args.candidate_pool,
+        semantic_weight=args.semantic_weight,
+    )
 
 
-def diverse_top_k(candidates: list[tuple], top_k: int) -> list[tuple]:
+def diverse_top_k(candidates: list[ScoredRow], top_k: int) -> list[ScoredRow]:
     selected = []
     seen_feedback_ids = set()
     seen_statements = set()
 
-    for fused, semantic, keyword, row in candidates:
+    for candidate in candidates:
+        row = candidate.row
         feedback_id = row.get("feedback_id")
         statement_key = " ".join(tokenize(row.get("statement")))
         if feedback_id and feedback_id in seen_feedback_ids:
@@ -94,20 +99,21 @@ def diverse_top_k(candidates: list[tuple], top_k: int) -> list[tuple]:
             continue
         seen_feedback_ids.add(feedback_id)
         seen_statements.add(statement_key)
-        selected.append((fused, semantic, keyword, row))
+        selected.append(candidate)
         if len(selected) >= top_k:
             break
 
     return selected
 
 
-def format_result(rank_number: int, scored: tuple) -> dict:
-    fused, semantic, keyword, row = scored
+def format_result(rank_number: int, scored: ScoredRow) -> dict:
+    row = scored.row
     return {
         "rank": rank_number,
-        "score": round(float(fused), 4),
-        "semantic_score": round(float(semantic), 4),
-        "keyword_score": round(float(keyword), 4),
+        "score": round(scored.score, 4),
+        "semantic_score": round(scored.semantic, 4),
+        "keyword_score": round(scored.keyword, 4),
+        "metadata_score": round(scored.metadata, 4),
         "atom_id": row.get("atom_id"),
         "feedback_id": row.get("feedback_id"),
         "statement": row.get("statement"),
@@ -125,8 +131,10 @@ def format_result(rank_number: int, scored: tuple) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Query the Signora retrieval index.")
     parser.add_argument("query", help="Natural-language retrieval query.")
-    parser.add_argument("--index-dir", default=str(DEFAULT_INDEX_DIR), help="Directory containing index_manifest.json.")
+    parser.add_argument("--index-dir", help=f"Directory containing index_manifest.json. Defaults to dataset/index/{DEFAULT_PROFILE} when available.")
     parser.add_argument("--top-k", type=int, default=8, help="Number of diverse results to return.")
+    parser.add_argument("--mode", choices=["pipeline", "recall"], default="recall", help="Retrieval strategy. Recall broadens candidates with metadata/topic signals before reranking.")
+    parser.add_argument("--candidate-pool", type=int, default=250, help="Candidates gathered per semantic, keyword, and metadata route in recall mode.")
     parser.add_argument("--semantic-weight", type=float, default=0.75, help="Fusion weight for semantic score; keyword gets the remainder.")
     parser.add_argument("--abstain-threshold", type=float, help="If the top fused score is below this, return no answer.")
     parser.add_argument("--product-area", help="Filter by product_area.")
@@ -137,7 +145,7 @@ def main() -> None:
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     args = parser.parse_args()
 
-    index_dir = Path(args.index_dir)
+    index_dir = resolve_index_dir(args.index_dir)
     manifest, metadata, embeddings = load_index(index_dir)
     candidates = rank(args.query, metadata, embeddings, manifest, args)
     selected = diverse_top_k(candidates, args.top_k)
@@ -149,7 +157,10 @@ def main() -> None:
         print(json.dumps({
             "query": args.query,
             "index_model": manifest.get("model"),
-            "embedding_profile": manifest.get("embedding_profile"),
+            "index_dir": str(index_dir),
+            "embedding_profile": manifest_profile(manifest),
+            "retrieval_mode": args.mode,
+            "candidate_pool": args.candidate_pool,
             "semantic_weight": args.semantic_weight,
             "top_score": top_score,
             "should_abstain": should_abstain,
@@ -158,7 +169,8 @@ def main() -> None:
         return
 
     print(f"Query: {args.query}")
-    print(f"Index model: {manifest.get('model')} ({manifest.get('embedding_profile')})")
+    print(f"Index model: {manifest.get('model')} ({manifest_profile(manifest)})")
+    print(f"Retrieval mode: {args.mode}")
     print(f"Results: {0 if should_abstain else len(results)}")
     print()
 

@@ -78,6 +78,14 @@ def resolve_profile(profile: str | None) -> tuple[str, dict]:
     return slug, MODEL_PROFILES[slug]
 
 
+def profile_for_model(model_name: str | None) -> str | None:
+    """Resolve older index manifests that recorded a model but no profile."""
+    for slug, spec in MODEL_PROFILES.items():
+        if model_name == spec["name"] or model_name == f"sentence-transformers/{spec['name']}":
+            return slug
+    return None
+
+
 def create_encoder(profile: str | None = None) -> tuple[str, dict, Callable[[list[str], str], np.ndarray]]:
     """Return `(slug, spec, encode)` for document/query embedding.
 

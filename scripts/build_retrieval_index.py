@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = ROOT / "dataset"
 ATOMS_PATH = DATASET_ROOT / "data" / "processed" / "feedback_atoms.jsonl"
 ITEMS_PATH = DATASET_ROOT / "data" / "processed" / "feedback_items.jsonl"
-DEFAULT_OUTPUT_DIR = DATASET_ROOT / "index"
+DEFAULT_OUTPUT_ROOT = DATASET_ROOT / "index"
 DOCUMENT_RECIPE_VERSION = "signora-production-retrieval-document-v2"
 
 
@@ -122,7 +122,7 @@ def main() -> None:
         help=f"Embedding profile. Default: {DEFAULT_PROFILE}. Local fallback: mpnet.",
     )
     parser.add_argument("--batch-size", type=int, default=64, help="Embedding batch size.")
-    parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR), help="Directory for index artifacts.")
+    parser.add_argument("--output-dir", help="Directory for index artifacts. Defaults to dataset/index/<profile>.")
     args = parser.parse_args()
 
     profile_slug, profile, encode = create_encoder(args.profile)
@@ -135,7 +135,7 @@ def main() -> None:
         vectors.append(encode(batch, "document"))
 
     embeddings = np.vstack(vectors).astype("float32")
-    output_dir = Path(args.output_dir)
+    output_dir = Path(args.output_dir) if args.output_dir else DEFAULT_OUTPUT_ROOT / profile_slug
     output_dir.mkdir(parents=True, exist_ok=True)
 
     np.savez_compressed(output_dir / "feedback_atom_embeddings.npz", embeddings=embeddings)

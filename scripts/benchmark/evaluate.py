@@ -1,16 +1,22 @@
 """Evaluate one model index as dense-only, pipeline, or recall-oriented retrieval."""
 import argparse
 import math
+import sys
 import time
-from collections import Counter
 from pathlib import Path
 
 import numpy as np
 
 from common import (DEFAULT_INDEX_ROOT, DEFAULT_RESULTS_ROOT, EVAL_DIR, corpus_fingerprint,
-                    keyword_score, load_index, read_jsonl, row_matches_filters,
-                    row_matches_relevance, tokenize, write_json)
+                    load_index, read_jsonl, row_matches_filters,
+                    row_matches_relevance, write_json)
 from models import create_encoder
+
+SCRIPTS_ROOT = Path(__file__).resolve().parents[1]
+if str(SCRIPTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_ROOT))
+
+from retrieval_strategy import rank_rows
 
 
 def validate(index_manifest, metadata, embeddings, questions, slug):
@@ -36,57 +42,20 @@ def validate(index_manifest, metadata, embeddings, questions, slug):
                 raise ValueError(f"{question['question_id']} gold atom violates its relevance rules")
 
 
-def metadata_topic_score(row, question_tokens):
-    """Score query overlap against structured metadata fields."""
-    if not question_tokens:
-        return 0.0
-    metadata_text = " ".join(str(row.get(field) or "") for field in ("topic", "subtopic", "product_area", "feedback_type", "severity", "customer_segment"))
-    metadata_tokens = set(tokenize(metadata_text.replace("_", " ")))
-    if not metadata_tokens:
-        return 0.0
-    return len(set(question_tokens) & metadata_tokens) / max(1, min(len(set(question_tokens)), len(metadata_tokens)))
-
-
-def pipeline_score(semantic, question_tokens, row):
-    keyword = keyword_score(question_tokens, row.get("search_text"))
-    return 0.75 * semantic + 0.25 * keyword
-
-
-def recall_score(semantic, question_tokens, row):
-    keyword = keyword_score(question_tokens, row.get("search_text"))
-    metadata = metadata_topic_score(row, question_tokens)
-    return (0.55 * semantic) + (0.20 * keyword) + (0.25 * metadata)
-
-
 def ranked(query_vector, question, metadata, embeddings, mode, top_k, candidate_pool=250):
     scores = embeddings @ query_vector
-    question_tokens = Counter(tokenize(question["question"]))
-    candidates = []
-    for row in metadata:
-        if row_matches_filters(row, question.get("filters")):
-            score = float(scores[row["position"]])
-            if mode == "pipeline":
-                score = pipeline_score(score, question_tokens, row)
-            elif mode == "recall":
-                score = recall_score(score, question_tokens, row)
-            candidates.append((score, row))
-    candidates.sort(key=lambda pair: pair[0], reverse=True)
-
-    if mode == "recall":
-        broad = [
-            pair for pair in candidates
-            if metadata_topic_score(pair[1], question_tokens) > 0 or keyword_score(question_tokens, pair[1].get("search_text")) > 0
-        ]
-        broad.sort(key=lambda pair: pair[0], reverse=True)
-        by_atom = {}
-        for score, row in candidates[:candidate_pool] + broad[:candidate_pool]:
-            atom_id = row.get("atom_id")
-            if atom_id not in by_atom or score > by_atom[atom_id][0]:
-                by_atom[atom_id] = (score, row)
-        candidates = sorted(by_atom.values(), key=lambda pair: pair[0], reverse=True)
+    filtered = [row for row in metadata if row_matches_filters(row, question.get("filters"))]
+    candidates = rank_rows(
+        question["question"],
+        filtered,
+        scores,
+        mode=mode,
+        candidate_pool=candidate_pool,
+    )
 
     selected, seen_feedback = [], set()
-    for score, row in candidates:
+    for candidate in candidates:
+        score, row = candidate.score, candidate.row
         if row["feedback_id"] in seen_feedback:
             continue
         selected.append((score, row))

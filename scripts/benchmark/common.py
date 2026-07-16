@@ -2,8 +2,6 @@
 import hashlib
 import json
 import os
-import re
-from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -141,17 +139,3 @@ def row_matches_relevance(row, rules):
         if key.endswith("_any") and row.get(key[:-4]) not in allowed:
             return False
     return True
-
-
-def tokenize(text):
-    return [token for token in re.findall(r"[a-z0-9][a-z0-9_-]*", (text or "").lower()) if len(token) > 1]
-
-
-def keyword_score(query_tokens, text):
-    if not query_tokens:
-        return 0.0
-    text_counts = Counter(tokenize(text))
-    if not text_counts:
-        return 0.0
-    overlap = sum(min(text_counts[token], count) for token, count in query_tokens.items())
-    return overlap / max(1, sum(query_tokens.values()))

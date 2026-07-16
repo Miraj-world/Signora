@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-INDEX_ROOT = ROOT / "dataset" / "index"
+INDEX_ROOT = ROOT / "dataset" / "index" / "openai_small"
 
 
 def read_jsonl(path):
