@@ -122,6 +122,14 @@ The API exposes `GET /health`, `GET /ready`, interactive documentation at
 The root URL opens the analyst interface for questions, filters, uncertainty,
 retrieval confidence, and citation inspection.
 
+Run the deterministic desktop and mobile analyst-workspace checks with:
+
+```powershell
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
 Answer generation uses the calibrated abstention threshold in
 `config/retrieval_policy.json`. Questions below that threshold stop before the
 generation call. Answered responses use structured output, require inline atom

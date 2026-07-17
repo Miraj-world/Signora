@@ -43,6 +43,9 @@ scratch/
 exports/
 .playwright-cli/
 output/playwright/
+node_modules/
+test-results/
+playwright-report/
 
 # Rebuildable local semantic index
 dataset/index/
