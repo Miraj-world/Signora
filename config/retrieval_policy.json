@@ -1,0 +1,10 @@
+{
+  "policy_version": "signora-retrieval-policy-v1",
+  "calibration_source": "benchmark_v2 validation split",
+  "thresholds": {
+    "openai_small": {
+      "pipeline": 0.4158717691898346,
+      "recall": 0.3453946398364173
+    }
+  }
+}

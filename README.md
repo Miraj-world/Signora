@@ -104,6 +104,19 @@ Optional filters:
 py -3.12 scripts\query_retrieval.py "Which customers complain about delayed notifications?" --product-area notifications --top-k 5
 ```
 
+Generate a grounded answer from the recall-oriented evidence:
+
+```powershell
+py -3.12 scripts\answer_query.py "Why are enterprise administrators struggling with onboarding?"
+```
+
+Answer generation uses the calibrated abstention threshold in
+`config/retrieval_policy.json`. Questions below that threshold stop before the
+generation call. Answered responses use structured output, require inline atom
+citations, and fail closed if the model cites evidence that retrieval did not
+return. The default generation model is `gpt-5.4-mini`; override it with
+`SIGNORA_ANSWER_MODEL` or `--model`.
+
 The query pipeline uses the same model recorded in the index manifest and fuses
 dense semantic similarity with keyword overlap. The benchmark showed keyword
 fusion improved retrieval ranking for both local models, so the production
@@ -160,9 +173,11 @@ scripts\embeddings\embed_minilm.py`; indexes live under
 
 ## Suggested Next Decisions
 
-- Do error analysis on the weak queries for `text-embedding-3-small`.
 - Decide whether parent-thread context should be retrieved automatically for Reddit comments.
-- Add answer generation on top of retrieved evidence, with citations back to atom IDs and source feedback IDs.
+- Add an answer-quality evaluation pass for citation entailment, uncertainty,
+  counterevidence, and recommendation/fact separation.
+- Decide whether grounded answers should be exposed through an API or an
+  analyst-facing interface.
 
 ## Notes
 

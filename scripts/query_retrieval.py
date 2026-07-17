@@ -24,14 +24,8 @@ def read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def passes_filters(row: dict, args: argparse.Namespace) -> bool:
-    checks = {
-        "product_area": args.product_area,
-        "customer_segment": args.customer_segment,
-        "source_type": args.source_type,
-        "target_product": args.target_product,
-        "severity": args.severity,
-    }
+def passes_filters(row: dict, filters: dict | None) -> bool:
+    checks = filters or {}
     return all(not expected or row.get(key) == expected for key, expected in checks.items())
 
 
@@ -58,7 +52,16 @@ def manifest_profile(manifest: dict) -> str | None:
     return manifest.get("embedding_profile") or profile_for_model(manifest.get("model"))
 
 
-def rank(query: str, metadata: list[dict], embeddings: np.ndarray, manifest: dict, args: argparse.Namespace) -> list[ScoredRow]:
+def rank(
+    query: str,
+    metadata: list[dict],
+    embeddings: np.ndarray,
+    manifest: dict,
+    mode: str,
+    candidate_pool: int,
+    semantic_weight: float,
+    filters: dict | None = None,
+) -> list[ScoredRow]:
     profile = manifest_profile(manifest)
     if not profile:
         raise ValueError(
@@ -73,14 +76,14 @@ def rank(query: str, metadata: list[dict], embeddings: np.ndarray, manifest: dic
             f"profile={profile}. Rebuild the index for that profile."
         )
     semantic_scores = embeddings @ query_embedding
-    filtered = [row for row in metadata if passes_filters(row, args)]
+    filtered = [row for row in metadata if passes_filters(row, filters)]
     return rank_rows(
         query,
         filtered,
         semantic_scores,
-        mode=args.mode,
-        candidate_pool=args.candidate_pool,
-        semantic_weight=args.semantic_weight,
+        mode=mode,
+        candidate_pool=candidate_pool,
+        semantic_weight=semantic_weight,
     )
 
 
@@ -128,6 +131,47 @@ def format_result(rank_number: int, scored: ScoredRow) -> dict:
     }
 
 
+def retrieve(
+    query: str,
+    index_dir: str | None = None,
+    top_k: int = 8,
+    mode: str = "recall",
+    candidate_pool: int = 250,
+    semantic_weight: float = 0.75,
+    abstain_threshold: float | None = None,
+    filters: dict | None = None,
+) -> dict:
+    resolved_index = resolve_index_dir(index_dir)
+    manifest, metadata, embeddings = load_index(resolved_index)
+    candidates = rank(
+        query,
+        metadata,
+        embeddings,
+        manifest,
+        mode=mode,
+        candidate_pool=candidate_pool,
+        semantic_weight=semantic_weight,
+        filters=filters,
+    )
+    selected = diverse_top_k(candidates, top_k)
+    results = [format_result(i + 1, scored) for i, scored in enumerate(selected)]
+    top_score = results[0]["score"] if results else 0.0
+    should_abstain = abstain_threshold is not None and top_score < abstain_threshold
+    return {
+        "query": query,
+        "index_model": manifest.get("model"),
+        "index_dir": str(resolved_index),
+        "embedding_profile": manifest_profile(manifest),
+        "retrieval_mode": mode,
+        "candidate_pool": candidate_pool,
+        "semantic_weight": semantic_weight,
+        "abstain_threshold": abstain_threshold,
+        "top_score": top_score,
+        "should_abstain": should_abstain,
+        "results": [] if should_abstain else results,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Query the Signora retrieval index.")
     parser.add_argument("query", help="Natural-language retrieval query.")
@@ -145,40 +189,39 @@ def main() -> None:
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     args = parser.parse_args()
 
-    index_dir = resolve_index_dir(args.index_dir)
-    manifest, metadata, embeddings = load_index(index_dir)
-    candidates = rank(args.query, metadata, embeddings, manifest, args)
-    selected = diverse_top_k(candidates, args.top_k)
-    results = [format_result(i + 1, scored) for i, scored in enumerate(selected)]
-    top_score = results[0]["score"] if results else 0.0
-    should_abstain = args.abstain_threshold is not None and top_score < args.abstain_threshold
+    filters = {
+        "product_area": args.product_area,
+        "customer_segment": args.customer_segment,
+        "source_type": args.source_type,
+        "target_product": args.target_product,
+        "severity": args.severity,
+    }
+    payload = retrieve(
+        args.query,
+        index_dir=args.index_dir,
+        top_k=args.top_k,
+        mode=args.mode,
+        candidate_pool=args.candidate_pool,
+        semantic_weight=args.semantic_weight,
+        abstain_threshold=args.abstain_threshold,
+        filters=filters,
+    )
 
     if args.json:
-        print(json.dumps({
-            "query": args.query,
-            "index_model": manifest.get("model"),
-            "index_dir": str(index_dir),
-            "embedding_profile": manifest_profile(manifest),
-            "retrieval_mode": args.mode,
-            "candidate_pool": args.candidate_pool,
-            "semantic_weight": args.semantic_weight,
-            "top_score": top_score,
-            "should_abstain": should_abstain,
-            "results": [] if should_abstain else results,
-        }, ensure_ascii=False, indent=2))
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
         return
 
-    print(f"Query: {args.query}")
-    print(f"Index model: {manifest.get('model')} ({manifest_profile(manifest)})")
-    print(f"Retrieval mode: {args.mode}")
-    print(f"Results: {0 if should_abstain else len(results)}")
+    print(f"Query: {payload['query']}")
+    print(f"Index model: {payload['index_model']} ({payload['embedding_profile']})")
+    print(f"Retrieval mode: {payload['retrieval_mode']}")
+    print(f"Results: {len(payload['results'])}")
     print()
 
-    if should_abstain:
-        print(f"No confident evidence found. top_score={top_score:.4f} threshold={args.abstain_threshold:.4f}")
+    if payload["should_abstain"]:
+        print(f"No confident evidence found. top_score={payload['top_score']:.4f} threshold={args.abstain_threshold:.4f}")
         return
 
-    for result in results:
+    for result in payload["results"]:
         citation = result.get("source_url") or result.get("feedback_id")
         print(f"{result['rank']}. score={result['score']} atom={result['atom_id']} citation={citation}")
         print(
