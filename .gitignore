@@ -41,6 +41,8 @@ temp/
 .ipynb_checkpoints/
 scratch/
 exports/
+.playwright-cli/
+output/playwright/
 
 # Rebuildable local semantic index
 dataset/index/

@@ -6,11 +6,17 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from answer_generation import DEFAULT_POLICY_PATH, generate_answer, load_threshold
 from query_retrieval import resolve_index_dir, retrieve
 from retrieval_models import load_dotenv
+
+
+ROOT = Path(__file__).resolve().parents[1]
+WEB_ROOT = ROOT / "web"
 
 
 class AnswerRequest(BaseModel):
@@ -92,6 +98,13 @@ app = FastAPI(
     version="0.1.0",
     description="Citation-validated Voice of Customer retrieval and grounded answers.",
 )
+
+app.mount("/static", StaticFiles(directory=WEB_ROOT), name="static")
+
+
+@app.get("/", include_in_schema=False)
+def analyst_app() -> FileResponse:
+    return FileResponse(WEB_ROOT / "index.html")
 
 
 @app.get("/health")

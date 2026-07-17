@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signora Analyst</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">S</span><span>Signora</span></div>
+    <div class="ready" id="readyState"><span class="status-dot"></span><span>Checking</span></div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="filters" aria-label="Retrieval filters">
+      <div class="rail-heading">
+        <h2>Filters</h2>
+        <button class="text-button" id="resetFilters" type="button">Reset</button>
+      </div>
+
+      <label>Customer segment
+        <select id="customerSegment">
+          <option value="">All segments</option>
+          <option value="enterprise">Enterprise</option>
+          <option value="mid_market">Mid-market</option>
+          <option value="small_business">Small business</option>
+          <option value="individual">Individual</option>
+        </select>
+      </label>
+
+      <label>Product area
+        <select id="productArea">
+          <option value="">All product areas</option>
+          <option value="onboarding">Onboarding</option>
+          <option value="notifications">Notifications</option>
+          <option value="tasks">Tasks</option>
+          <option value="reporting">Reporting</option>
+          <option value="integrations">Integrations</option>
+        </select>
+      </label>
+
+      <label>Severity
+        <select id="severity">
+          <option value="">All severities</option>
+          <option value="critical">Critical</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </label>
+
+      <label>Source type
+        <select id="sourceType">
+          <option value="">All source types</option>
+          <option value="support_ticket">Support ticket</option>
+          <option value="customer_interview">Customer interview</option>
+          <option value="github_issue">GitHub issue</option>
+          <option value="churn_feedback">Churn feedback</option>
+          <option value="reddit_discussion">Reddit discussion</option>
+        </select>
+      </label>
+
+      <label>Top K
+        <input id="topK" type="number" min="1" max="20" value="8">
+      </label>
+
+      <div class="rail-note">Recall retrieval uses the calibrated OpenAI-small evidence policy.</div>
+    </aside>
+
+    <section class="workspace">
+      <div class="query-region">
+        <h1>Ask customer evidence</h1>
+        <form id="queryForm">
+          <textarea id="query" rows="3" maxlength="2000" required>Why are enterprise administrators struggling with onboarding?</textarea>
+          <button class="primary-button" id="submitButton" type="submit">Search</button>
+        </form>
+        <div class="form-hint"><span id="characterCount">73 / 2000</span><span>Ctrl + Enter</span></div>
+      </div>
+
+      <div class="result-summary" id="resultSummary" hidden>
+        <strong id="resultStatus">Answered</strong>
+        <span>Confidence <b id="confidence">0.000</b></span>
+        <span>Threshold <b id="threshold">0.000</b></span>
+        <span><b id="citationCount">0</b> citations</span>
+      </div>
+
+      <div class="initial-state" id="initialState">
+        <h2>Start with a customer question</h2>
+        <p>Answers are limited to retrieved evidence and include validated atom citations.</p>
+      </div>
+
+      <div class="loading-state" id="loadingState" hidden>
+        <div class="loading-line"></div>
+        <div class="loading-line short"></div>
+        <div class="loading-line"></div>
+      </div>
+
+      <article class="answer-region" id="answerRegion" hidden>
+        <h2>Answer</h2>
+        <div class="answer-copy" id="answerCopy"></div>
+        <div class="uncertainty" id="uncertaintyRegion">
+          <strong>Uncertainty</strong>
+          <p id="uncertaintyCopy"></p>
+        </div>
+        <div class="recommendations" id="recommendationsRegion" hidden>
+          <h3>Recommendations</h3>
+          <ul id="recommendationsList"></ul>
+        </div>
+      </article>
+
+      <div class="abstained-state" id="abstainedState" hidden>
+        <h2>No confident answer</h2>
+        <p id="abstainedCopy"></p>
+        <p>Try broadening filters or asking about a customer topic represented in the corpus.</p>
+      </div>
+
+      <div class="error-state" id="errorState" hidden>
+        <h2>Request failed</h2>
+        <p id="errorCopy"></p>
+      </div>
+    </section>
+
+    <aside class="evidence-panel" aria-label="Citation evidence">
+      <div class="evidence-heading">
+        <h2>Evidence <span id="evidenceCount">0</span></h2>
+        <span>Validated citations</span>
+      </div>
+      <div class="evidence-empty" id="evidenceEmpty">Citations appear here after an answered question.</div>
+      <div class="evidence-list" id="evidenceList"></div>
+    </aside>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

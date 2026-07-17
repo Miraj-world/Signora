@@ -119,6 +119,8 @@ py -3.12 -m uvicorn signora_api:app --app-dir scripts --host 127.0.0.1 --port 80
 The API exposes `GET /health`, `GET /ready`, interactive documentation at
 `/docs`, and `POST /v1/answers`. Answer responses are compact by default; set
 `include_evidence` to `true` when the caller also needs the retrieved rows.
+The root URL opens the analyst interface for questions, filters, uncertainty,
+retrieval confidence, and citation inspection.
 
 Answer generation uses the calibrated abstention threshold in
 `config/retrieval_policy.json`. Questions below that threshold stop before the
