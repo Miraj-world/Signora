@@ -18,12 +18,16 @@ DEFAULT_ANSWER_MODEL = "gpt-5.4-mini"
 ABSTENTION_MESSAGE = "I do not have enough retrieved evidence to answer that reliably."
 
 
+class GroundedClaim(BaseModel):
+    text: str
+    cited_atom_ids: list[str] = Field(min_length=1)
+
+
 class GroundedDraft(BaseModel):
     status: Literal["answered", "abstained"]
-    answer: str
-    cited_atom_ids: list[str] = Field(default_factory=list)
+    claims: list[GroundedClaim] = Field(default_factory=list)
     uncertainty: str
-    recommendations: list[str] = Field(default_factory=list)
+    recommendations: list[GroundedClaim] = Field(default_factory=list)
 
 
 class CitationValidationError(ValueError):
@@ -63,27 +67,32 @@ def finalize_draft(draft: GroundedDraft, evidence: list[dict]) -> dict:
     if draft.status == "abstained":
         return {
             "status": "abstained",
-            "answer": draft.answer or ABSTENTION_MESSAGE,
+            "answer": ABSTENTION_MESSAGE,
             "uncertainty": draft.uncertainty,
             "recommendations": [],
             "citations": [],
         }
 
     evidence_by_atom = {item["atom_id"]: item for item in evidence}
-    cited_ids = list(dict.fromkeys(draft.cited_atom_ids))
+    if not draft.claims:
+        raise CitationValidationError("Answered response contained no claims")
+    claim_groups = [*draft.claims, *draft.recommendations]
+    cited_ids = list(dict.fromkeys(
+        atom_id
+        for claim in claim_groups
+        for atom_id in claim.cited_atom_ids
+    ))
     invalid = [atom_id for atom_id in cited_ids if atom_id not in evidence_by_atom]
     if invalid:
         raise CitationValidationError(f"Model cited atoms outside retrieved evidence: {invalid}")
-    if not cited_ids:
-        raise CitationValidationError("Answered response contained no citations")
-    rendered_text = "\n".join([draft.answer, *draft.recommendations])
-    inline_ids = set(re.findall(r"\[(atom_[A-Za-z0-9_-]+)\]", rendered_text))
-    unreported = inline_ids - set(cited_ids)
-    missing_inline = set(cited_ids) - inline_ids
-    if unreported:
-        raise CitationValidationError(f"Inline citations were omitted from cited_atom_ids: {sorted(unreported)}")
-    if missing_inline:
-        raise CitationValidationError(f"Cited atoms were not referenced inline: {sorted(missing_inline)}")
+
+    def render(claim: GroundedClaim) -> str:
+        clean_text = re.sub(r"\[(atom_[A-Za-z0-9_-]+)\]", "", claim.text).strip()
+        citations = " ".join(f"[{atom_id}]" for atom_id in dict.fromkeys(claim.cited_atom_ids))
+        return f"{clean_text} {citations}"
+
+    answer_text = " ".join(render(claim) for claim in draft.claims)
+    recommendations = [render(claim) for claim in draft.recommendations]
 
     citations = []
     for atom_id in cited_ids:
@@ -96,9 +105,9 @@ def finalize_draft(draft: GroundedDraft, evidence: list[dict]) -> dict:
         })
     return {
         "status": "answered",
-        "answer": draft.answer,
+        "answer": answer_text,
         "uncertainty": draft.uncertainty,
-        "recommendations": draft.recommendations,
+        "recommendations": recommendations,
         "citations": citations,
     }
 
@@ -130,9 +139,18 @@ def generate_answer(query: str, retrieval: dict, model: str | None = None) -> di
     instructions = (
         "You are Signora's grounded Voice of Customer analyst. Answer only from the retrieved evidence. "
         "Never introduce facts, counts, causes, or customer claims that are not present in that evidence. "
-        "Every factual sentence in the answer must end with one or more exact atom citations like "
-        "[atom_123]. Use only atom IDs shown in the evidence and return every used ID in cited_atom_ids. "
-        "Clearly separate evidence from recommendations. If the evidence conflicts, say so. "
+        "Treat each atom statement as the support boundary for its citation. Source context may clarify wording, but "
+        "do not use context to make a claim that the cited atom statement does not itself support. Prefer atoms whose "
+        "statements directly answer the question; do not cite workaround or process atoms as support for an issue claim. "
+        "When combining separate examples, say 'the retrieved examples include' instead of implying prevalence, consensus, "
+        "cross-segment scope, or causation. Do not infer that an issue is unresolved, widespread, primary, or caused by "
+        "something unless a cited atom explicitly says so. "
+        "Return each factual point as a separate claims item with only the exact atom IDs that directly support that point. "
+        "Keep one claim per item; do not attach a bundle of citations to a paragraph or use an atom merely because it has "
+        "the same topic metadata. Use only atom IDs shown in the evidence. "
+        "Recommendations must be returned only in the recommendations field, each as a separate evidence-linked item; "
+        "otherwise return an empty recommendations list. Do not offer follow-up "
+        "work or say 'if you want'. If retrieved evidence is mixed or includes limitations, state that explicitly. "
         "If it is insufficient to answer the question, return status=abstained. Keep the answer concise."
     )
     client = OpenAI()

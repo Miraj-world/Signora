@@ -7,7 +7,7 @@ SCRIPTS_ROOT = Path(__file__).resolve().parents[1]
 if str(SCRIPTS_ROOT) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_ROOT))
 
-from answer_generation import (CitationValidationError, GroundedDraft,
+from answer_generation import (CitationValidationError, GroundedClaim, GroundedDraft,
                                finalize_draft, generate_answer, load_threshold)
 
 
@@ -22,8 +22,10 @@ EVIDENCE = [{
 def test_valid_citations_are_enriched_from_retrieved_evidence():
     draft = GroundedDraft(
         status="answered",
-        answer="Administrators struggle with SSO setup. [atom_valid]",
-        cited_atom_ids=["atom_valid"],
+        claims=[GroundedClaim(
+            text="Administrators struggle with SSO setup.",
+            cited_atom_ids=["atom_valid"],
+        )],
         uncertainty="Evidence is limited to the retrieved feedback.",
     )
     answer = finalize_draft(draft, EVIDENCE)
@@ -34,8 +36,10 @@ def test_valid_citations_are_enriched_from_retrieved_evidence():
 def test_invented_citation_fails_closed():
     draft = GroundedDraft(
         status="answered",
-        answer="Unsupported claim. [atom_invented]",
-        cited_atom_ids=["atom_invented"],
+        claims=[GroundedClaim(
+            text="Unsupported claim.",
+            cited_atom_ids=["atom_invented"],
+        )],
         uncertainty="",
     )
     try:
@@ -46,20 +50,22 @@ def test_invented_citation_fails_closed():
         raise AssertionError("Expected invented citation to fail validation")
 
 
-def test_unreported_inline_citation_fails_closed():
+def test_inline_citations_are_rendered_from_structured_claims():
     draft = GroundedDraft(
         status="answered",
-        answer="Supported claim. [atom_valid]",
-        cited_atom_ids=["atom_valid"],
+        claims=[GroundedClaim(
+            text="Supported claim.",
+            cited_atom_ids=["atom_valid"],
+        )],
         uncertainty="",
-        recommendations=["Unsupported recommendation. [atom_invented]"],
+        recommendations=[GroundedClaim(
+            text="Improve SSO setup.",
+            cited_atom_ids=["atom_valid"],
+        )],
     )
-    try:
-        finalize_draft(draft, EVIDENCE)
-    except CitationValidationError as error:
-        assert "omitted from cited_atom_ids" in str(error)
-    else:
-        raise AssertionError("Expected unreported inline citation to fail validation")
+    answer = finalize_draft(draft, EVIDENCE)
+    assert answer["answer"].endswith("[atom_valid]")
+    assert answer["recommendations"][0].endswith("[atom_valid]")
 
 
 def test_low_confidence_retrieval_abstains_without_generation_call():
@@ -76,7 +82,7 @@ def test_recall_threshold_is_versioned():
 if __name__ == "__main__":
     test_valid_citations_are_enriched_from_retrieved_evidence()
     test_invented_citation_fails_closed()
-    test_unreported_inline_citation_fails_closed()
+    test_inline_citations_are_rendered_from_structured_claims()
     test_low_confidence_retrieval_abstains_without_generation_call()
     test_recall_threshold_is_versioned()
     print("answer generation checks passed")

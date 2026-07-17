@@ -117,6 +117,17 @@ citations, and fail closed if the model cites evidence that retrieval did not
 return. The default generation model is `gpt-5.4-mini`; override it with
 `SIGNORA_ANSWER_MODEL` or `--model`.
 
+Run the held-out answer-quality evaluation after changing retrieval,
+generation prompts, answer models, or citation handling:
+
+```powershell
+py -3.12 scripts\benchmark\evaluate_answers.py --answerable-limit 6 --abstention-limit 6 --fail-on-gate
+```
+
+This keeps answer correctness, abstention, citation predicate precision,
+groundedness, uncertainty, counterevidence, recommendation separation, and
+source diversity visible as separate measurements.
+
 The query pipeline uses the same model recorded in the index manifest and fuses
 dense semantic similarity with keyword overlap. The benchmark showed keyword
 fusion improved retrieval ranking for both local models, so the production
