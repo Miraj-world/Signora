@@ -26,6 +26,7 @@ class GroundedClaim(BaseModel):
 class GroundedDraft(BaseModel):
     status: Literal["answered", "abstained"]
     claims: list[GroundedClaim] = Field(default_factory=list)
+    caveats: list[GroundedClaim] = Field(default_factory=list)
     uncertainty: str
     recommendations: list[GroundedClaim] = Field(default_factory=list)
 
@@ -76,7 +77,7 @@ def finalize_draft(draft: GroundedDraft, evidence: list[dict]) -> dict:
     evidence_by_atom = {item["atom_id"]: item for item in evidence}
     if not draft.claims:
         raise CitationValidationError("Answered response contained no claims")
-    claim_groups = [*draft.claims, *draft.recommendations]
+    claim_groups = [*draft.claims, *draft.caveats, *draft.recommendations]
     cited_ids = list(dict.fromkeys(
         atom_id
         for claim in claim_groups
@@ -91,7 +92,9 @@ def finalize_draft(draft: GroundedDraft, evidence: list[dict]) -> dict:
         citations = " ".join(f"[{atom_id}]" for atom_id in dict.fromkeys(claim.cited_atom_ids))
         return f"{clean_text} {citations}"
 
-    answer_text = " ".join(render(claim) for claim in draft.claims)
+    answer_parts = [render(claim) for claim in draft.claims]
+    answer_parts.extend(f"Caveat: {render(claim)}" for claim in draft.caveats)
+    answer_text = " ".join(answer_parts)
     recommendations = [render(claim) for claim in draft.recommendations]
 
     citations = []
@@ -141,11 +144,16 @@ def generate_answer(query: str, retrieval: dict, model: str | None = None) -> di
         "Never introduce facts, counts, causes, or customer claims that are not present in that evidence. "
         "Treat each atom statement as the support boundary for its citation. Source context may clarify wording, but "
         "do not use context to make a claim that the cited atom statement does not itself support. Prefer atoms whose "
-        "statements directly answer the question; do not cite workaround or process atoms as support for an issue claim. "
+        "statements directly answer the question. For questions asking for problems or issues, claims must be direct "
+        "problem or symptom statements. Troubleshooting attempts, workarounds, support outcomes, requests for a fix, "
+        "meta statements, and pilot counterexamples are not additional problems and must not appear in claims. "
+        "Put only material counterexamples or limitations in caveats, with their own atom citations. "
         "When combining separate examples, say 'the retrieved examples include' instead of implying prevalence, consensus, "
         "cross-segment scope, or causation. Do not infer that an issue is unresolved, widespread, primary, or caused by "
         "something unless a cited atom explicitly says so. "
-        "Return each factual point as a separate claims item with only the exact atom IDs that directly support that point. "
+        "Return at most four direct factual points as separate claims items with only the exact atom IDs that directly "
+        "support that point. Cite one atom per claim unless every cited atom statement independently expresses the same "
+        "claim. "
         "Keep one claim per item; do not attach a bundle of citations to a paragraph or use an atom merely because it has "
         "the same topic metadata. Use only atom IDs shown in the evidence. "
         "Recommendations must be returned only in the recommendations field, each as a separate evidence-linked item; "

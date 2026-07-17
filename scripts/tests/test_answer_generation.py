@@ -58,6 +58,10 @@ def test_inline_citations_are_rendered_from_structured_claims():
             cited_atom_ids=["atom_valid"],
         )],
         uncertainty="",
+        caveats=[GroundedClaim(
+            text="A pilot workspace did not show the same issue.",
+            cited_atom_ids=["atom_valid"],
+        )],
         recommendations=[GroundedClaim(
             text="Improve SSO setup.",
             cited_atom_ids=["atom_valid"],
@@ -65,6 +69,7 @@ def test_inline_citations_are_rendered_from_structured_claims():
     )
     answer = finalize_draft(draft, EVIDENCE)
     assert answer["answer"].endswith("[atom_valid]")
+    assert "Caveat:" in answer["answer"]
     assert answer["recommendations"][0].endswith("[atom_valid]")
 
 

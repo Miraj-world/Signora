@@ -128,6 +128,9 @@ This keeps answer correctness, abstention, citation predicate precision,
 groundedness, uncertainty, counterevidence, recommendation separation, and
 source diversity visible as separate measurements.
 
+The expanded 12-answerable/10-abstention run passed every quality floor. See
+`dataset/reports/answer_quality_expanded.md` for the versioned summary.
+
 The query pipeline uses the same model recorded in the index manifest and fuses
 dense semantic similarity with keyword overlap. The benchmark showed keyword
 fusion improved retrieval ranking for both local models, so the production

@@ -120,7 +120,9 @@ def judge_answer(question: str, answer: dict, model: str) -> QualityJudgment:
         "2 when recommendations are clearly separate and evidence-linked or correctly omitted, 1 when somewhat mixed, "
         "0 when recommendations are presented as facts. Counterevidence handling: 2 when conflicts are represented or "
         "the answer appropriately avoids claiming consensus when no conflict is visible, 1 when incomplete, 0 when clear "
-        "counterevidence is ignored. Judge only from the provided material."
+        "counterevidence is ignored. Do not penalize omission of troubleshooting, generic qualifications, or unrelated "
+        "auxiliary evidence; counterevidence must materially qualify a claim the answer actually makes. Judge only from "
+        "the provided material."
     )
     prompt = evidence_prompt(question, evidence) + "\n\nCandidate answer:\n" + json.dumps(candidate, ensure_ascii=False)
     response = OpenAI().responses.parse(
