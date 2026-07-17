@@ -110,6 +110,16 @@ Generate a grounded answer from the recall-oriented evidence:
 py -3.12 scripts\answer_query.py "Why are enterprise administrators struggling with onboarding?"
 ```
 
+Run the HTTP API locally:
+
+```powershell
+py -3.12 -m uvicorn signora_api:app --app-dir scripts --host 127.0.0.1 --port 8000
+```
+
+The API exposes `GET /health`, `GET /ready`, interactive documentation at
+`/docs`, and `POST /v1/answers`. Answer responses are compact by default; set
+`include_evidence` to `true` when the caller also needs the retrieved rows.
+
 Answer generation uses the calibrated abstention threshold in
 `config/retrieval_policy.json`. Questions below that threshold stop before the
 generation call. Answered responses use structured output, require inline atom
@@ -190,8 +200,7 @@ scripts\embeddings\embed_minilm.py`; indexes live under
 - Parent-thread context is deferred until ingestion provides stable parent IDs
   and a threaded-source evaluation set. See
   `dataset/reports/thread_context_readiness.md`.
-- Decide whether grounded answers should be exposed through an API or an
-  analyst-facing interface.
+- Build an analyst-facing interface on top of the validated `/v1/answers` API.
 
 ## Notes
 
