@@ -187,9 +187,9 @@ scripts\embeddings\embed_minilm.py`; indexes live under
 
 ## Suggested Next Decisions
 
-- Decide whether parent-thread context should be retrieved automatically for Reddit comments.
-- Add an answer-quality evaluation pass for citation entailment, uncertainty,
-  counterevidence, and recommendation/fact separation.
+- Parent-thread context is deferred until ingestion provides stable parent IDs
+  and a threaded-source evaluation set. See
+  `dataset/reports/thread_context_readiness.md`.
 - Decide whether grounded answers should be exposed through an API or an
   analyst-facing interface.
 
